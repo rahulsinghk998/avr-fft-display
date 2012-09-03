@@ -15,12 +15,13 @@ int main(void)
     
     for(;;) {
         char i;
-        uint8_t 
         
         for(i = 0; i < 10; i++) {
-            _delay_ms(30);  /* max is 262.14 ms / F_CPU in MHz */
+            _delay_ms(10);  /* max is 262.14 ms / F_CPU in MHz */
         }
-        PORTB ^= 1;    /* toggle the LED */
+        
+        if (PINB > 0) /* if the button is pressed */
+            PORTB ^= 1;    /* toggle the LED */
     }
     
     return 0;               /* never reached */
