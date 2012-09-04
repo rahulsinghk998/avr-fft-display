@@ -27,21 +27,21 @@ FUSES      = -U hfuse:w:0xdf:m -U lfuse:w:0x62:m -B250
 # ATMega8 fuse bits used above (fuse bits for other devices are different!):
 # Example for 8 MHz internal oscillator
 # Fuse high byte:
-# 0xd9 = 1 1 0 1   1 0 0 1 <-- BOOTRST (boot reset vector at 0x0000)
-#        ^ ^ ^ ^   ^ ^ ^------ BOOTSZ0
-#        | | | |   | +-------- BOOTSZ1
+# 0xdf = 1 1 0 1   1 1 1 1 <-- BODLEVEL0 (brown-out trigger detection level)
+#        ^ ^ ^ ^   ^ ^ ^------ BODLEVEL1
+#        | | | |   | +-------- BODLEVEL2
 #        | | | |   +---------- EESAVE (set to 0 to preserve EEPROM over chip erase)
-#        | | | +-------------- CKOPT (clock option, depends on oscillator type)
+#        | | | +-------------- WDTON (if set to 0, watchdog is always on)
 #        | | +---------------- SPIEN (if set to 1, serial programming is disabled)
-#        | +------------------ WDTON (if set to 0, watchdog is always on)
+#        | +------------------ DWEN (if set to 0, DebugWIRE is on)
 #        +-------------------- RSTDISBL (if set to 0, RESET pin is disabled)
 # Fuse low byte:
-# 0x24 = 0 0 1 0   0 1 0 0
+# 0x62 = 0 1 1 0   0 0 1 0
 #        ^ ^ \ /   \--+--/
 #        | |  |       +------- CKSEL 3..0 (8M internal RC)
 #        | |  +--------------- SUT 1..0 (slowly rising power)
-#        | +------------------ BODEN (if 0, brown-out detector is enabled)
-#        +-------------------- BODLEVEL (if 0: 4V, if 1: 2.7V)
+#        | +------------------ CKOUT (if 0, clock output is enabled)
+#        +-------------------- CKDIV8 (if set to 0, divide clock by 8)
 #
 # For computing fuse byte values for other devices and options see
 # the fuse bit calculator at http://www.engbedded.com/fusecalc/
