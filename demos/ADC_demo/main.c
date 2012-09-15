@@ -1,11 +1,15 @@
 /* Name: main.c
- * Author: <insert your name here>
- * Copyright: <insert your copyright message here>
- * License: <insert your license reference here>
+ * Author: William Moy
+ * ADC demo for ATtiny84
+ * holding the button will cause the ADC to read a sample and write the binary values to the LED
+ * 
+ * HW configuration steps:
+ * PB0 is LED output
+ * PB1 is button input
+ * PA0 is ADC input
  */
 
 #include <avr/io.h>
-#include <util/delay.h>
 
 int main(void)
 {
@@ -20,19 +24,10 @@ int main(void)
     ADCSRA |= (1 << ADEN); // enable ADC
     
     
-//    while (1) {
-//        _delay_ms(10);  /* max is 262.14 ms / F_CPU in MHz */
-//        PORTB ^= 1;
-//    }
-
-    
     while (1) {
         char i;
         
         if ((PINB & 0x02) > 0) { /* if the button is pressed */
-            
-            PORTB ^= 1;
-            PORTB ^= 1;
             
             
             ADCSRA |= (1 << ADSC); // start conversion
@@ -42,6 +37,7 @@ int main(void)
             
             ADCSRA |= (1 << ADIF); // clear ADIF
             
+            /* output the sample bits to the LED */
             for (i=0; i<8; i++) {
                 if (ADCL & (1 << i))
                     PORTB |= 0x01;
