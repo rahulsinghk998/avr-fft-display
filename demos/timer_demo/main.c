@@ -9,6 +9,8 @@
  */
 
 #include <avr/io.h>
+#include "types.h"
+#include "timer.h"
 
 int main(void)
 {
@@ -16,11 +18,13 @@ int main(void)
     DDRB    &= 0xFD;        /* make the switch pin an input */
     PORTB   &= 0xFD;        /* make it tri-stated */
 
-    
+    /* set up the timer */
+
+    BYTE waiting = 0;
     while (1) {
-        char i;
+        BYTE i;
         
-        if ((PINB & 0x02) > 0) { /* if the button is pressed */
+        if (!waiting && (PINB & 0x02) > 0) { /* if the button is pressed */
             
             // start timer
             
