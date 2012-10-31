@@ -21,7 +21,7 @@ DEVICE     = attiny84
 CLOCK      = 8000000
 PROGRAMMER = -c usbtiny
 
-OBJECTS    = main.o
+OBJECTS    = main.o timer.o
 FUSES      = -U hfuse:w:0xdf:m -U lfuse:w:0x62:m -B250
 
 # ATMega8 fuse bits used above (fuse bits for other devices are different!):
