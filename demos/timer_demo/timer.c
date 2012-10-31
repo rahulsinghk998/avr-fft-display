@@ -14,9 +14,21 @@
 
 int timerHits = 0;
 
-void setup_timer(int countTo, int clockSelect) {
+void startTimer(int countTo, int clockSelect) {
 
-	switch (clockSelect) {
+    // Set Clear Timer on Compare (CTC) Mode
+    TCCR0A &= ~_BV(WGM00);
+    TCCR0A |= _BV(WGM01);
+    TCCR0B &= ~_BV(WGM02);
+
+    // Set the upper counter bound
+    OCR0A = countTo;
+	
+    // Reset the ticks
+    TCNT0 = 0;
+
+    // Set the prescaler and start the timer
+    switch (clockSelect) {
 		case DISABLE_TIMER:
 			TCCR0B &= ~(_BV(CS02) | _BV(CS01) | _BV(CS00));
 		break;
@@ -53,15 +65,22 @@ void setup_timer(int countTo, int clockSelect) {
 		break;
 	}
 
-    OCR0B = countTo;
+    
     
 }
 
-void stop_timer(void) {
+void stopTimer(void) {
     TCCR0B &= 0xF8;
 }
 
+BYTE isTimerTripped(void) {
+    return bit_is_set(TIFR0, OCF0A);
+}
 
-BYTE get_timer_value(void) {
+void clearTimerTripped(void) {
+    TIFR0 = _BV(OCF0A);
+}
+
+BYTE getTimerValue(void) {
 	return TCNT0;
 }
