@@ -53,7 +53,7 @@ void setup_timer(int countTo, int clockSelect) {
 		break;
 	}
 
-
+    OCR0B = countTo;
     
 }
 
