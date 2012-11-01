@@ -1,67 +1,86 @@
 /*
 * timer.c
 * William Moy
-* Timer interface for 
+* Timer interface for 8-bit ATtiny AVR
+* Designed on ATtiny84
 *
 */
 
 #include "timer.h"
+#include "types.h"
+#include "common.h"
+#include <avr/io.h>
+#include <avr/sfr_defs.h>
 
 int timerHits = 0;
 
-void setup_timer(int countTo, int clockSelect) {
+void startTimer(int countTo, int clockSelect) {
 
-	switch (clockSelect) {
+    // Set Clear Timer on Compare (CTC) Mode
+    bit_clear(TCCR0A, WGM00);
+    bit_set(TCCR0A, WGM01);
+    bit_clear(TCCR0B, WGM02);
+
+    // Set the upper counter bound
+    OCR0A = countTo;
+	
+    // Reset the ticks
+    TCNT0 = 0;
+
+    // Set the prescaler and start the timer
+    switch (clockSelect) {
 		case DISABLE_TIMER:
-			TCCR0B &= ~(CS02 << 1 | CS01 << 1 | CS00 << 1);
-			return;
+			bit_clear(TCCR0B, CS00 | CS01 | CS02);
 		break;
 		case CLOCK_SCALE_1:
-			TCCR0B |= (CS00 << 1);
-			TCCR0B &= ~(CS02 << 1 | CS01 << 1);
+			bit_set(TCCR0B, CS00);
+			bit_clear(TCCR0B, CS01 | CS02);
 		break;
 		case CLOCK_SCALE_8:
-			TCCR0B |= (CS01 << 1);
-			TCCR0B &= ~(CS02 << 1 | CS00 << 1);
+			bit_set(TCCR0B, CS01);
+			bit_clear(TCCR0B, CS00 | CS02);
 		break;
 		case CLOCK_SCALE_64:
-			TCCR0B |= (CS01 << 1 | CS00 << 1);
-			TCCR0B &= ~(CS02 << 1);
+			bit_set(TCCR0B, CS00 | CS01);
+			bit_clear(TCCR0B, CS02);
 		break;
 		case CLOCK_SCALE_256:
-			TCCR0B |= (CS02 << 1);
-			TCCR0B &= ~(CS01 << 1 | CS00 << 1);
+			bit_set(TCCR0B, CS02);
+			bit_clear(TCCR0B, CS00 | CS01);
 		break;
 		case CLOCK_SCALE_1024:
-			TCCR0B |= (CS02 << 1 | CS00 << 1);
-			TCCR0B &= ~(CS01 << 1);
+			bit_set(TCCR0B, CS00 | CS02);
+			bit_clear(TCCR0B, CS01);
 		break;
 		case EXT_CLOCK_FALLING:
-			TCCR0B |= (CS02 << 1 | CS01 << 1);
-			TCCR0B &= ~(CS00 << 1);
+			bit_set(TCCR0B, CS01 | CS02);
+			bit_clear(TCCR0B, CS00);
 		break;
 		case EXT_CLOCK_RISING:
-			TCCR0B |= (CS02 << 1 | CS01 << 1 | CS00 << 1);
+			bit_set(TCCR0B, CS00 | CS01 | CS02);
 		break;
 		default:
-			TCCR0B &= ~(CS02 << 1 | CS01 << 1 | CS00 << 1);
+			bit_clear(TCCR0B, CS00 | CS01 | CS02);
 			return;
 		break;
 	}
 
-
+    
     
 }
 
-void start_timer(int num) {
-
+void stopTimer(void) {
+    bit_clear(TCCR0B, CS00 | CS01 | CS02);
 }
 
-void stop_timer(int num) {
-
+BYTE isTimerTripped(void) {
+    return bit_is_set(TIFR0, OCF0A);
 }
 
+void clearTimerTripped(void) {
+    bit_set(TIFR0, OCF0A);
+}
 
-BYTE get_timer_value(void) {
+BYTE getTimerValue(void) {
 	return TCNT0;
 }

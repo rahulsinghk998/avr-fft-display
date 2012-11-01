@@ -16,10 +16,11 @@ enum TIMER_CLOCK_SELECT {
 	EXT_CLOCK_RISING
 };
 
-void setup_timer(int, int);
-void start_timer(int);
-void stop_timer(int);
-BYTE get_timer_value(void);
+void startTimer(int countTo, int clockSelect);
+void stopTimer(void);
+BYTE isTimerTripped(void);
+void clearTimerTripped(void);
+BYTE getTimerValue(void);
 
 
 #endif
