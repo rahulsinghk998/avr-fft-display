@@ -9,17 +9,17 @@
 #include "timer.h"
 #include "types.h"
 #include "common.h"
-#include <avr/common.h>
 #include <avr/io.h>
+#include <avr/sfr_defs.h>
 
 int timerHits = 0;
 
 void startTimer(int countTo, int clockSelect) {
 
     // Set Clear Timer on Compare (CTC) Mode
-    TCCR0A &= ~_BV(WGM00);
-    TCCR0A |= _BV(WGM01);
-    TCCR0B &= ~_BV(WGM02);
+    bit_clear(TCCR0A, WGM00);
+    bit_set(TCCR0A, WGM01);
+    bit_clear(TCCR0B, WGM02);
 
     // Set the upper counter bound
     OCR0A = countTo;
