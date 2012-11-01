@@ -8,7 +8,7 @@
 
 #include "timer.h"
 #include "types.h"
-#include <avr/sfr_defs.h>
+#include "common.h"
 #include <avr/common.h>
 #include <avr/io.h>
 
@@ -30,37 +30,37 @@ void startTimer(int countTo, int clockSelect) {
     // Set the prescaler and start the timer
     switch (clockSelect) {
 		case DISABLE_TIMER:
-			TCCR0B &= ~(_BV(CS02) | _BV(CS01) | _BV(CS00));
+			bit_clear(TCCR0B, CS00 | CS01 | CS02);
 		break;
 		case CLOCK_SCALE_1:
-			TCCR0B |= (_BV(CS00));
-			TCCR0B &= ~(_BV(CS02)| _BV(CS01));
+			bit_set(TCCR0B, CS00);
+			bit_clear(TCCR0B, CS01 | CS02);
 		break;
 		case CLOCK_SCALE_8:
-			TCCR0B |= (_BV(CS01));
-			TCCR0B &= ~(_BV(CS02) | _BV(CS00));
+			bit_set(TCCR0B, CS01);
+			bit_clear(TCCR0B, CS00 | CS02);
 		break;
 		case CLOCK_SCALE_64:
-			TCCR0B |= _BV(CS01) | _BV(CS00);
-			TCCR0B &= ~(_BV(CS02));
+			bit_set(TCCR0B, CS00 | CS01);
+			bit_clear(TCCR0B, CS02);
 		break;
 		case CLOCK_SCALE_256:
-			TCCR0B |= _BV(CS02);
-			TCCR0B &= ~(_BV(CS01) | _BV(CS00));
+			bit_set(TCCR0B, CS02);
+			bit_clear(TCCR0B, CS00 | CS01);
 		break;
 		case CLOCK_SCALE_1024:
-			TCCR0B |= (_BV(CS02) | _BV(CS00));
-			TCCR0B &= ~(_BV(CS01));
+			bit_set(TCCR0B, CS00 | CS02);
+			bit_clear(TCCR0B, CS01);
 		break;
 		case EXT_CLOCK_FALLING:
-			TCCR0B |= (_BV(CS02) | _BV(CS01));
-			TCCR0B &= ~(_BV(CS00));
+			bit_set(TCCR0B, CS01 | CS02);
+			bit_clear(TCCR0B, CS00);
 		break;
 		case EXT_CLOCK_RISING:
-			TCCR0B |= (_BV(CS02) | _BV(CS01) | _BV(CS00));
+			bit_set(TCCR0B, CS00 | CS01 | CS02);
 		break;
 		default:
-			TCCR0B &= ~(_BV(CS02) | _BV(CS01) | _BV(CS00));
+			bit_clear(TCCR0B, CS00 | CS01 | CS02);
 			return;
 		break;
 	}
@@ -70,7 +70,7 @@ void startTimer(int countTo, int clockSelect) {
 }
 
 void stopTimer(void) {
-    TCCR0B &= 0xF8;
+    bit_clear(TCCR0B, CS00 | CS01 | CS02);
 }
 
 BYTE isTimerTripped(void) {
@@ -78,7 +78,7 @@ BYTE isTimerTripped(void) {
 }
 
 void clearTimerTripped(void) {
-    TIFR0 = _BV(OCF0A);
+    bit_set(TIFR0, OCF0A);
 }
 
 BYTE getTimerValue(void) {
