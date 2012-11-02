@@ -20,39 +20,34 @@ int main(void)
     PORTB   &= 0xFD;        /* make it tri-stated */
 
     /* set up the timer */
-
-    PORTB ^= 1;
-    PORTB ^= 1;
-
     BYTE timerHits = 0;
     while (1) {
         
         if ((PINB & 0x02) > 0) { /* if the button is pressed */
             
-            // start timer
             if (isTimerRunning()) {
-               if (!isTimerTripped()) {
-                   continue;
-               }
-               else
-               {
+                if (!isTimerTripped()) {
+                    continue;
+                }
+                else
+                {
                     clearTimerTripped();
-                    if (++timerHits >= 30) {
+                    if (++timerHits >= 4) {
                         PORTB ^= 1;
                         timerHits = 0;
                     }
-               }
+                }
             }
             else {
                 startTimer(255, CLOCK_SCALE_1024);
                 timerHits = 0;
             }
-           
-            
         }
         else
         {
             stopTimer();
+            timerHits = 0;
+            clearTimerTripped();
         }
                
     }
