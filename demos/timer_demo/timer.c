@@ -77,6 +77,10 @@ BYTE isTimerTripped(void) {
     return bit_is_set(TIFR0, OCF0A);
 }
 
+BYTE isTimerRunning(void) {
+    return bit_is_set(TCCR0B, CS00 | CS01 | CS02);
+}
+
 void clearTimerTripped(void) {
     bit_set(TIFR0, OCF0A);
 }

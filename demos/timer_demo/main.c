@@ -9,6 +9,7 @@
  */
 
 #include <avr/io.h>
+#include "common.h"
 #include "types.h"
 #include "timer.h"
 
@@ -20,18 +21,40 @@ int main(void)
 
     /* set up the timer */
 
-    BYTE waiting = 0;
+    PORTB ^= 1;
+    PORTB ^= 1;
+
+    BYTE timerHits = 0;
     while (1) {
-        BYTE i;
         
-        if (!waiting && (PINB & 0x02) > 0) { /* if the button is pressed */
+        if ((PINB & 0x02) > 0) { /* if the button is pressed */
             
             // start timer
-            
-            
+            if (isTimerRunning()) {
+               if (!isTimerTripped()) {
+                   continue;
+               }
+               else
+               {
+                    clearTimerTripped();
+                    if (++timerHits >= 30) {
+                        PORTB ^= 1;
+                        timerHits = 0;
+                    }
+               }
+            }
+            else {
+                startTimer(255, CLOCK_SCALE_1024);
+                timerHits = 0;
+            }
+           
             
         }
-                
+        else
+        {
+            stopTimer();
+        }
+               
     }
     
     return 0;               /* never reached */
