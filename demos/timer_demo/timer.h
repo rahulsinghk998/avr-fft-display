@@ -19,6 +19,7 @@ enum TIMER_CLOCK_SELECT {
 void startTimer(int countTo, int clockSelect);
 void stopTimer(void);
 BYTE isTimerTripped(void);
+BYTE isTimerRunning(void);
 void clearTimerTripped(void);
 BYTE getTimerValue(void);
 

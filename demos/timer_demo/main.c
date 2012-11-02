@@ -9,6 +9,7 @@
  */
 
 #include <avr/io.h>
+#include "common.h"
 #include "types.h"
 #include "timer.h"
 
@@ -19,19 +20,40 @@ int main(void)
     PORTB   &= 0xFD;        /* make it tri-stated */
 
     /* set up the timer */
-
-    BYTE waiting = 0;
+    BYTE timerHits = 0;
     while (1) {
-        BYTE i;
         
-        if (!waiting && (PINB & 0x02) > 0) { /* if the button is pressed */
-            
-            // start timer
-            
-            
-            
+        if ((PINB & 0x02) > 0) { /* if the button is pressed */
+            /* when the timer is running */ 
+            if (isTimerRunning()) {
+                if (!isTimerTripped()) {
+                    /* if timer has not reached the top yet, continue */
+                    continue;
+                }
+                else
+                {
+                    /* if timer has tripped, clear flag and increment */
+                    clearTimerTripped();
+                    if (++timerHits >= 4) {
+                        PORTB ^= 1; // toggle LED when limit reached
+                        timerHits = 0;
+                    }
+                }
+            }
+            /* if the timer isn't running, start it */
+            else {
+                startTimer(255, CLOCK_SCALE_1024);
+                timerHits = 0;
+            }
         }
-                
+        /* if the button is not pressed, stop and clear timer */
+        else
+        {
+            stopTimer();
+            timerHits = 0;
+            clearTimerTripped();
+        }
+               
     }
     
     return 0;               /* never reached */
