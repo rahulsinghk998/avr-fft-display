@@ -22,7 +22,6 @@
  *
  * Legal Stuff:
  *    If you use this code, at least credit me :)
- *    elm-chan's code is used to process FFTs, thanks be to elm-chan.
  */
 
 /* PSEUDOCODE HERE */
