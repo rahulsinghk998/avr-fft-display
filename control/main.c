@@ -78,3 +78,7 @@
 // -added complexity (duh)
 // -possibly doubling the memory usage (TODO: look at FFT implementation
 //  to see if pre-filling the SAME buffer is possible, but probably not)
+//
+// instead of using FFT, maybe use Goertzel algorithm?  we're only
+// looking at 8 frequencies, so a full FFT is likely unnecessary
+// con: we'd have to rename the project!  jay kay ell oh ell
