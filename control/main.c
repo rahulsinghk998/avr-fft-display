@@ -32,8 +32,9 @@
 //   -IO stuff
 //   -should probably do a quick test of IO...LED flash would be nice
 //   -set up TWI
-// -set up button interrupts
-// -set up debouncing timer
+// -set up button interrupts (positive edge triggered)
+// -set up debouncing timer (8-bit timer)
+// -set up ADC capture timer (40kHz? 16-bit timer?)
 // -defaults and variables
 
 // start control loop
@@ -46,14 +47,35 @@
 
 
 // other functions, may be here or eventually in other files:
-// timer stuff
 // button stuff:
-//   -input select, LED change and whatnot
+//   -ISR that starts the debounce delay timer
+//   -sets a flag until the timer's tripped so interrupts can still
+//    happen.  we don't want to block sampling.
+//   -if we enter the ISR with the flag set, we don't do anything
+// timer0 stuff:
+//   -ISR checks the button status
+//   -if the button's on, then switch inputs and toggle LEDs
+//   -clears the button flag to allow presses again
+// timer1 stuff?:
+//   -ISR fills the buffer with one value, increments offset
+//   -when the buffer's full, disable the timer, reset offset
 // reset stuff?
 // butt stuff
 // helper functions (probably going to be in common.c)
 
 
+
 /* Possible extra features */
 // sleep, maybe with another button, or repurpose reset button
 // ???
+
+/* Design questions */
+// capture samples while performing FFT?  what are the implications for
+// sampling then processing versus processing while sampling?
+// pros: 
+// -using the cycles in between grabbing samples, therefore more FFT
+//  throughput
+// cons:
+// -added complexity (duh)
+// -possibly doubling the memory usage (TODO: look at FFT implementation
+//  to see if pre-filling the SAME buffer is possible, but probably not)
