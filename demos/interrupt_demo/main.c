@@ -31,6 +31,7 @@ int main(void)
             }
             /* if the timer isn't running, start it */
             else {
+                enableTimerInterrupt();
                 startTimer(255, CLOCK_SCALE_1024);
                 sei();
                 timerHits = 0;
@@ -41,6 +42,7 @@ int main(void)
         {
             cli();
             stopTimer();
+            disableTimerInterrupt();
             timerHits = 0;
             clearTimerTripped();
         }
@@ -50,7 +52,7 @@ int main(void)
     return 0;               /* never reached */
 }
 
-ISR(TIM0_COMPA) {
+ISR(TIM0_COMPA_vect) {
     if (++timerHits >= 4) {
         PORTB ^= 1; // toggle LED when limit reached
         timerHits = 0;
