@@ -19,7 +19,7 @@ DEVICE     = attiny84
 CLOCK      = 8000000
 PROGRAMMER = -c usbtiny
 
-OBJECTS    = main.o ffft.o
+OBJECTS    = main.o
 FUSES      = -U hfuse:w:0xdf:m -U lfuse:w:0x62:m -B250
 
 # ATtiny84 fuse bits (fuse bits for other devices are different!)
@@ -44,8 +44,6 @@ FUSES      = -U hfuse:w:0xdf:m -U lfuse:w:0x62:m -B250
 # the fuse bit calculator at http://www.engbedded.com/fusecalc/
 
 # TODO: Change CKSEL to use crystal oscillator
-# TODO: Figure out what CKDIV8 does for FFT speed
-# TODO: Figure out how to compile with .S asm
 
 # Tune the lines below only if you know what you are doing:
 

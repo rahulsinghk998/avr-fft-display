@@ -26,6 +26,16 @@
 
 /* PSEUDOCODE HERE */
 
+#include "common.h"
+// #ifdef ATTINY84???
+#include "portmap_attiny84.h"
+// #endif
+#include "types.h"
+
+int main(void) {
+    return 0;
+}
+
 // system initialization, including:
 // -ports:
 //   -IO stuff
