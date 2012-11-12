@@ -18,31 +18,65 @@
  *
  *
  * Version History:
- *    v0.0.1 = pseudocode and comments
+ *    v0.0.1    pseudocode and comments
+ *    v0.1      system initialization, LED toggle demo 
  *
  * Legal Stuff:
  *    If you use this code, at least credit me :)
  */
 
-/* PSEUDOCODE HERE */
-
+#include <avr/interrupt.h>
+#include <avr/io.h>
+#include <util/delay.h>
 #include "common.h"
-// #ifdef ATTINY84???
 #include "portmap_attiny84.h"
-// #endif
+#include "state.h"
+#include "timer8.h"
 #include "types.h"
 
+/* Constants */
+#define DEBOUNCE_CYCLE_COUNT 196 // ~10ms, assumes 20MHz clock/1024
+
+/* Global variables */
+volatile BYTE state;
+
 int main(void) {
-    return 0;
-}
+
+    /* Variables */
+
+    /* Initialize global variables */
+    state = 0x00;
+
+    /* Set up LEDs as outputs */
+    bit_set(DDRA, LED1_BIT);
+    bit_set(DDRA, LED2_BIT);
+
+    /* Blink LEDs to show that we're on */
+    bit_set(PORTA, LED1_BIT);
+    bit_set(PORTA, LED2_BIT);
+    _delay_ms(500);
+    bit_clear(PORTA, LED1_BIT);
+    bit_clear(PORTA, LED2_BIT);
+    _delay_ms(500);
+    // turn on LED associated with ADC1
+    bit_set(PORTA, LED1_BIT); 
+
+    /* Set up push button */
+    bit_clear(DDRB, PB_BIT); // set as input
+    bit_clear(PORTB, PB_BIT); // <-unnecessary?
+    bit_set(MCUCR, ISC00); // set to trigger on rising edge
+    bit_set(MCUCR, ISC01);
+    bit_set(GIMSK, INT0);
+    sei();
+
+    /* Set up TWI */
+    // TODO
+
+    while(1);
 
 // system initialization, including:
 // -ports:
-//   -IO stuff
-//   -should probably do a quick test of IO...LED flash would be nice
 //   -set up TWI
-// -set up button interrupts (positive edge triggered)
-// -set up debouncing timer (8-bit timer)
 // -set up ADC capture timer (40kHz? 16-bit timer?)
 // -defaults and variables
 
@@ -54,6 +88,42 @@ int main(void) {
 // send result through TWI
 // end loop
 
+    return 0;
+}
+
+/* Button IRQ handler */
+ISR(INT0_vect) {
+    if (isTimerRunning()) {
+        // do nothing
+    }
+    else {
+        enableTimerInterrupt();
+        startTimer(DEBOUNCE_CYCLE_COUNT, CLOCK_SCALE_1024);
+    }
+}
+
+/* Timer IRQ handler */
+ISR(TIM0_COMPA_vect) {
+    // if the button is still held after the time interval
+    if (bit_is_set(PINB, PB_BIT)) {
+        // TODO: finish switching stuff
+        // if reading from ADC 2, switch to ADC1
+        if (bit_is_set(state, PB_STATE)) {
+            bit_clear(state, PB_STATE);
+            bit_clear(PORTA, LED2_BIT);
+            bit_set(PORTA, LED1_BIT);
+        }
+        // else, switch to ADC 2
+        else {
+            bit_set(state, PB_STATE);
+            bit_clear(PORTA, LED1_BIT);
+            bit_set(PORTA, LED2_BIT);
+        }
+    }
+    disableTimerInterrupt();
+    stopTimer();
+    clearTimerTripped();
+}
 
 // other functions, may be here or eventually in other files:
 // button stuff:

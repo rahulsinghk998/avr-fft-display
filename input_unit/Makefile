@@ -16,11 +16,11 @@
 # FUSES ........ Parameters for avrdude to flash the fuses appropriately.
 
 DEVICE     = attiny84
-CLOCK      = 8000000
+CLOCK      = 20000000 
 PROGRAMMER = -c usbtiny
 
-OBJECTS    = main.o
-FUSES      = -U hfuse:w:0xdf:m -U lfuse:w:0x62:m -B250
+OBJECTS    = main.o timer8.o
+FUSES      = -U hfuse:w:0xdf:m -U lfuse:w:0xef:m -B250
 
 # ATtiny84 fuse bits (fuse bits for other devices are different!)
 # Fuse high byte:
