@@ -19,7 +19,7 @@ DEVICE     = attiny84
 CLOCK      = 20000000 
 PROGRAMMER = -c usbtiny
 
-OBJECTS    = main.o timer8.o
+OBJECTS    = main.o timer8.o timer16.o
 FUSES      = -U hfuse:w:0xdf:m -U lfuse:w:0xef:m -B250
 
 # ATtiny84 fuse bits (fuse bits for other devices are different!)
