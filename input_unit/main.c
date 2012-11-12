@@ -31,6 +31,7 @@
 #include "common.h"
 #include "portmap_attiny84.h"
 #include "state.h"
+#include "timer16.h"
 #include "timer8.h"
 #include "types.h"
 
