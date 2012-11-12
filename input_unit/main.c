@@ -93,17 +93,17 @@ int main(void) {
 
 /* Button IRQ handler */
 ISR(INT0_vect) {
-    if (isTimerRunning()) {
+    if (isTimer16Running()) {
         // do nothing
     }
     else {
-        enableTimerInterrupt();
-        startTimer(DEBOUNCE_CYCLE_COUNT, CLOCK_SCALE_1024);
+        enableTimer16Interrupt();
+        startTimer16(DEBOUNCE_CYCLE_COUNT, CLOCK_SCALE_1024);
     }
 }
 
 /* Timer IRQ handler */
-ISR(TIM0_COMPA_vect) {
+ISR(TIM1_COMPA_vect) {
     // if the button is still held after the time interval
     if (bit_is_set(PINB, PB_BIT)) {
         // TODO: finish switching stuff

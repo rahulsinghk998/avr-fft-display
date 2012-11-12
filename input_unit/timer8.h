@@ -1,28 +1,18 @@
 #ifndef TIMER8_H
 #define TIMER8_H
 
+#include "timer_common.h"
 #include "types.h"
 
-extern volatile BYTE timerHits;
+extern volatile BYTE timer8Hits;
 
-enum TIMER_CLOCK_SELECT {
-	DISABLE_TIMER,
-	CLOCK_SCALE_1,
-	CLOCK_SCALE_8,
-	CLOCK_SCALE_64,
-	CLOCK_SCALE_256,
-	CLOCK_SCALE_1024,
-	EXT_CLOCK_FALLING,
-	EXT_CLOCK_RISING
-};
-
-void startTimer(BYTE countTo, BYTE clockSelect);
-void stopTimer(void);
-BYTE isTimerTripped(void);
-BYTE isTimerRunning(void);
-void clearTimerTripped(void);
-BYTE getTimerValue(void);
-void enableTimerInterrupt(void);
-void disableTimerInterrupt(void);
+void startTimer8(BYTE countTo, BYTE clockSelect);
+void stopTimer8(void);
+BYTE isTimer8Tripped(void);
+BYTE isTimer8Running(void);
+void clearTimer8Tripped(void);
+BYTE getTimer8Value(void);
+void enableTimer8Interrupt(void);
+void disableTimer8Interrupt(void);
 
 #endif
