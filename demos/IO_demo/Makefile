@@ -17,13 +17,13 @@
 #                   default_serial = "avrdoper"
 # FUSES ........ Parameters for avrdude to flash the fuses appropriately.
 
-DEVICE     = attiny84
+DEVICE     = attiny2313
 CLOCK      = 8000000
 PROGRAMMER = -c usbtiny
 
 OBJECTS    = main.o
-FUSES      = -U hfuse:w:0xdf:m -U lfuse:w:0x62:m -B250
-
+#FUSES      = -U hfuse:w:0xdf:m -U lfuse:w:0x62:m -B250
+FUSES      = -U lfuse:w:0x64:m -U hfuse:w:0xdf:m -U efuse:w:0xff:m
 # ATMega8 fuse bits used above (fuse bits for other devices are different!):
 # Example for 8 MHz internal oscillator
 # Fuse high byte:
