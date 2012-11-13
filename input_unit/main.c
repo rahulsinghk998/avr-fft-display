@@ -121,9 +121,9 @@ ISR(TIM1_COMPA_vect) {
             bit_set(PORTA, LED2_BIT);
         }
     }
-    disableTimerInterrupt();
-    stopTimer();
-    clearTimerTripped();
+    disableTimer16Interrupt();
+    stopTimer16();
+    clearTimer16Tripped();
 }
 
 // other functions, may be here or eventually in other files:

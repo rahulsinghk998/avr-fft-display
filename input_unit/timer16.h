@@ -6,7 +6,7 @@
 
 extern volatile BYTE timer16Hits;
 
-void startTimer16(BYTE countTo, BYTE clockSelect);
+void startTimer16(DWORD countTo, BYTE clockSelect);
 void stopTimer16(void);
 BYTE isTimer16Tripped(void);
 BYTE isTimer16Running(void);
