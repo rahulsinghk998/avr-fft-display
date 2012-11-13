@@ -27,7 +27,6 @@
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
-#include <util/delay.h>
 #include "common.h"
 #include "portmap_attiny84.h"
 #include "state.h"
@@ -55,10 +54,10 @@ int main(void) {
     /* Blink LEDs to show that we're on */
     bit_set(PORTA, LED1_BIT);
     bit_set(PORTA, LED2_BIT);
-    _delay_ms(500);
+    delay_ms(250);
     bit_clear(PORTA, LED1_BIT);
     bit_clear(PORTA, LED2_BIT);
-    _delay_ms(500);
+    delay_ms(250);
     // turn on LED associated with ADC1
     bit_set(PORTA, LED1_BIT); 
 
