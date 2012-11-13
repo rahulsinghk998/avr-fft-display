@@ -46,7 +46,7 @@ FUSES      = -U hfuse:w:0xd2:m -U lfuse:w:0xef:m -B250
 # Tune the lines below only if you know what you are doing:
 
 AVRDUDE = avrdude $(PROGRAMMER) -p $(DEVICE)
-COMPILE = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE)
+COMPILE = avr-gcc -g -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE)
 
 # symbolic targets:
 all:	main.hex
@@ -93,7 +93,7 @@ main.hex: main.elf
 
 # Targets for code debugging and analysis:
 disasm:	main.elf
-	avr-objdump -d main.elf
+	avr-objdump -d -S main.elf > mainasm.txt
 
 cpp:
 	$(COMPILE) -E main.c
