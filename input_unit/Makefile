@@ -16,11 +16,11 @@
 # FUSES ........ Parameters for avrdude to flash the fuses appropriately.
 
 DEVICE     = attiny84
-CLOCK      = 20000000 
+CLOCK      = 8000000 
 PROGRAMMER = -c usbtiny
 
-OBJECTS    = main.o timer8.o timer16.o
-FUSES      = -U hfuse:w:0xdf:m -U lfuse:w:0xef:m -B250
+OBJECTS    = main.o timer8.o timer16.o common.o
+FUSES      = -U hfuse:w:0xd2:m -U lfuse:w:0xef:m -B250
 
 # ATtiny84 fuse bits (fuse bits for other devices are different!)
 # Fuse high byte:
@@ -33,7 +33,7 @@ FUSES      = -U hfuse:w:0xdf:m -U lfuse:w:0xef:m -B250
 #        | +------------------ DWEN (if set to 0, DebugWIRE is on)
 #        +-------------------- RSTDISBL (if set to 0, RESET pin is disabled)
 # Fuse low byte:
-# 0x62 = 0 1 1 0   0 0 1 0
+# 0x62 = 1 1 1 0   0 0 1 0
 #        ^ ^ \ /   \--+--/
 #        | |  |       +------- CKSEL 3..0 (8M internal RC)
 #        | |  +--------------- SUT 1..0 (slowly rising power)
@@ -42,8 +42,6 @@ FUSES      = -U hfuse:w:0xdf:m -U lfuse:w:0xef:m -B250
 #
 # For computing fuse byte values for other devices and options see
 # the fuse bit calculator at http://www.engbedded.com/fusecalc/
-
-# TODO: Change CKSEL to use crystal oscillator
 
 # Tune the lines below only if you know what you are doing:
 
