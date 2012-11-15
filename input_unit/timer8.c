@@ -12,7 +12,9 @@
 #include <avr/io.h>
 #include <avr/sfr_defs.h>
 
-void startTimer(BYTE countTo, BYTE clockSelect) {
+static volatile BYTE clockOption = DISABLE_TIMER;
+
+void timer8_init(DWORD countTo, BYTE clockSelect) {
 
     // Set Clear Timer on Compare (CTC) Mode
     bit_clear(TCCR0A, WGM00);
@@ -22,11 +24,17 @@ void startTimer(BYTE countTo, BYTE clockSelect) {
     // Set the upper counter bound
     OCR0A = countTo;
 
+    clockOption = clockSelect;
+
+}
+
+void timer8_start(void) {
+
     // Reset the ticks
     TCNT0 = 0;
 
     // Set the prescaler and start the timer
-    switch (clockSelect) {
+    switch (clockOption) {
 		case DISABLE_TIMER:
 			bit_clear(TCCR0B, CS00);
             bit_clear(TCCR0B, CS01);
@@ -79,33 +87,32 @@ void startTimer(BYTE countTo, BYTE clockSelect) {
     
 }
 
-void stopTimer(void) {
+void timer8_stop(void) {
 	bit_clear(TCCR0B, CS00);
     bit_clear(TCCR0B, CS01);
     bit_clear(TCCR0B, CS02);
 }
 
-BYTE isTimerTripped(void) {
+BYTE timer8_is_tripped(void) {
     return bit_is_set(TIFR0, OCF0A);
 }
 
-BYTE isTimerRunning(void) {
+BYTE timer8_is_running(void) {
     return TCCR0B & (_BV(CS00) | _BV(CS01) | _BV(CS02));
-    //return bit_is_set(TCCR0B, CS00 | CS01 | CS02);
 }
 
-void clearTimerTripped(void) {
+void timer8_clear_flag(void) {
     bit_set(TIFR0, OCF0A);
 }
 
-BYTE getTimerValue(void) {
+DWORD timer8_get_count(void) {
 	return TCNT0;
 }
 
-void enableTimerInterrupt(void) {
+void timer8_enable_int(void) {
     bit_set(TIMSK0, OCIE0A);
 }
 
-void disableTimerInterrupt(void) {
+void timer8_disable_int(void) {
     bit_clear(TIMSK0, OCIE0A);
 }

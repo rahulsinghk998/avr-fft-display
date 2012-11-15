@@ -4,15 +4,14 @@
 #include "timer_common.h"
 #include "types.h"
 
-extern volatile BYTE timer16Hits;
-
-void startTimer16(DWORD countTo, BYTE clockSelect);
-void stopTimer16(void);
-BYTE isTimer16Tripped(void);
-BYTE isTimer16Running(void);
-void clearTimer16Tripped(void);
-DWORD getTimer16Value(void);
-void enableTimer16Interrupt(void);
-void disableTimer16Interrupt(void);
+void timer16_init(DWORD countTo, BYTE clockSelect);
+void timer16_start(void);
+void timer16_stop(void);
+BYTE timer16_is_tripped(void);
+BYTE timer16_is_running(void);
+void timer16_clear_flag(void);
+DWORD timer16_get_count(void);
+void timer16_enable_int(void);
+void timer16_disable_int(void);
 
 #endif

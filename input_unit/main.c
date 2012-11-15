@@ -68,6 +68,8 @@ int main(void) {
     bit_set(MCUCR, ISC01);
     bit_set(GIMSK, INT0);
     sei();
+    timer16_enable_int();
+    timer16_init(DEBOUNCE_CYCLE_COUNT, CLOCK_SCALE_1024);
 
     /* Set up TWI */
     // TODO
@@ -93,12 +95,11 @@ int main(void) {
 
 /* Button IRQ handler */
 ISR(INT0_vect) {
-    if (isTimer16Running()) {
+    if (timer16_is_running()) {
         // do nothing
     }
     else {
-        enableTimer16Interrupt();
-        startTimer16(DEBOUNCE_CYCLE_COUNT, CLOCK_SCALE_1024);
+        timer16_start();
     }
 }
 
@@ -120,9 +121,8 @@ ISR(TIM1_COMPA_vect) {
             bit_set(PORTA, LED2_BIT);
         }
     }
-    disableTimer16Interrupt();
-    stopTimer16();
-    clearTimer16Tripped();
+    timer16_stop();
+    timer16_clear_flag();
 }
 
 // other functions, may be here or eventually in other files:

@@ -12,7 +12,9 @@
 #include <avr/io.h>
 #include <avr/sfr_defs.h>
 
-void startTimer16(DWORD countTo, BYTE clockSelect) {
+static volatile BYTE clockOption = DISABLE_TIMER;
+
+void timer16_init(DWORD countTo, BYTE clockSelect) {
 
     // Set Clear Timer on Compare (CTC) Mode
     bit_clear(TCCR1A, WGM10);
@@ -22,11 +24,17 @@ void startTimer16(DWORD countTo, BYTE clockSelect) {
     // Set the upper counter bound
     OCR1A = countTo;
 
+    clockOption = clockSelect;
+
+}
+
+void timer16_start(void) {
+
     // Reset the ticks
     TCNT1 = 0;
 
     // Set the prescaler and start the timer
-    switch (clockSelect) {
+    switch (clockOption) {
 		case DISABLE_TIMER:
 			bit_clear(TCCR1B, CS10);
             bit_clear(TCCR1B, CS11);
@@ -79,32 +87,32 @@ void startTimer16(DWORD countTo, BYTE clockSelect) {
     
 }
 
-void stopTimer16(void) {
+void timer16_stop(void) {
 	bit_clear(TCCR1B, CS10);
     bit_clear(TCCR1B, CS11);
     bit_clear(TCCR1B, CS12);
 }
 
-BYTE isTimer16Tripped(void) {
+BYTE timer16_is_tripped(void) {
     return bit_is_set(TIFR1, OCF1A);
 }
 
-BYTE isTimer16Running(void) {
+BYTE timer16_is_running(void) {
     return TCCR1B & (_BV(CS10) | _BV(CS11) | _BV(CS12));
 }
 
-void clearTimer16Tripped(void) {
+void timer16_clear_flag(void) {
     bit_set(TIFR1, OCF1A);
 }
 
-DWORD getTimer16Value(void) {
+DWORD timer16_get_count(void) {
 	return TCNT1;
 }
 
-void enableTimer16Interrupt(void) {
+void timer16_enable_int(void) {
     bit_set(TIMSK1, OCIE1A);
 }
 
-void disableTimer16Interrupt(void) {
+void timer16_disable_int(void) {
     bit_clear(TIMSK1, OCIE1A);
 }
