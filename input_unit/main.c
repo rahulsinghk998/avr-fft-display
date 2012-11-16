@@ -74,13 +74,13 @@ int main(void) {
     /* Set up TWI */
     // TODO
 
-    while(1);
-
 // system initialization, including:
 // -ports:
 //   -set up TWI
 // -set up ADC capture timer (40kHz? 16-bit timer?)
 // -defaults and variables
+
+    while(1);
 
 // start control loop
 // read sample from ADC, depending on which input is selected
@@ -126,18 +126,6 @@ ISR(TIM1_COMPA_vect) {
 }
 
 // other functions, may be here or eventually in other files:
-// button stuff:
-//   -ISR that starts the debounce delay timer
-//   -sets a flag until the timer's tripped so interrupts can still
-//    happen.  we don't want to block sampling.
-//   -if we enter the ISR with the flag set, we don't do anything
-// timer0 stuff:
-//   -ISR checks the button status
-//   -if the button's on, then switch inputs and toggle LEDs
-//   -clears the button flag to allow presses again
-// timer1 stuff?:
-//   -ISR fills the buffer with one value, increments offset
-//   -when the buffer's full, disable the timer, reset offset
 // reset stuff?
 // butt stuff
 // helper functions (probably going to be in common.c)
@@ -149,16 +137,6 @@ ISR(TIM1_COMPA_vect) {
 // ???
 
 /* Design questions */
-// capture samples while performing FFT?  what are the implications for
-// sampling then processing versus processing while sampling?
-// pros: 
-// -using the cycles in between grabbing samples, therefore more FFT
-//  throughput
-// cons:
-// -added complexity (duh)
-// -possibly doubling the memory usage (TODO: look at FFT implementation
-//  to see if pre-filling the SAME buffer is possible, but probably not)
-//
 // instead of using FFT, maybe use Goertzel algorithm?  we're only
 // looking at 8 frequencies, so a full FFT is likely unnecessary
 // con: we'd have to rename the project!  jay kay ell oh ell
