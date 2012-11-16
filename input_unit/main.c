@@ -35,7 +35,7 @@
 #include "types.h"
 
 /* Constants */
-#define DEBOUNCE_CYCLE_COUNT 8 // ~10ms, assumes 8MHz F_cpu/8
+#define DEBOUNCE_CYCLE_COUNT 10000 // ~10ms, assumes 8MHz F_cpu/8
 
 /* Global variables */
 volatile BYTE state;
