@@ -7,13 +7,12 @@
 #include "types.h"
 
 /* Assumes F_cpu of 8MHz */
-void delay_ms(BYTE ms) {
-    volatile BYTE a,b,c;
-    for (a=0; a<32; a++) {
-        for (b=0; b<250; b++) {
-            for (c=0; c<ms; c++) {
-                ;
-            }
-        }
+#define ONE_MS 800 // 8000 cycles / # of instructions per ms loop
+void delay_ms(DWORD ms) {
+    volatile DWORD vms;
+    while (ms > 0) {
+        ms--;
+        for (vms = ONE_MS; vms > 0; vms--)
+            ;
     }
 }

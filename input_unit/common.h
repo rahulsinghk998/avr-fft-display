@@ -6,6 +6,6 @@
 #define bit_set(reg, off)             ((reg) |= 1 << (off))
 #define bit_clear(reg, off)           ((reg) &= ~(1 << (off)))
 
-void delay_ms(BYTE);
+void delay_ms(DWORD);
 
 #endif
