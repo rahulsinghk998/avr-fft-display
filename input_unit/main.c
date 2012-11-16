@@ -35,7 +35,7 @@
 #include "types.h"
 
 /* Constants */
-#define DEBOUNCE_CYCLE_COUNT 78 // ~10ms, assumes 8MHz F_cpu/512
+#define DEBOUNCE_CYCLE_COUNT 8 // ~10ms, assumes 8MHz F_cpu/8
 
 /* Global variables */
 volatile BYTE state;
@@ -69,7 +69,7 @@ int main(void) {
     bit_set(GIMSK, INT0);
     sei();
     timer16_enable_int();
-    timer16_init(DEBOUNCE_CYCLE_COUNT, CLOCK_SCALE_1024);
+    timer16_init(DEBOUNCE_CYCLE_COUNT, CLOCK_SCALE_8);
 
     /* Set up TWI */
     // TODO
