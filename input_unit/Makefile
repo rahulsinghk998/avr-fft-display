@@ -79,6 +79,7 @@ load: all
 
 clean:
 	rm -f main.hex main.elf $(OBJECTS)
+	rm -f mainasm.txt
 
 # file targets:
 main.elf: $(OBJECTS)
