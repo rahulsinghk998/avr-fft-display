@@ -77,3 +77,7 @@ void adc_start(void) {
 void adc_clear_flag(void) {
     bit_set(ADCSRA, ADIF);
 }
+
+BYTE adc_is_running(void) {
+    return bit_is_set(ADCSRA, ADSC);
+}

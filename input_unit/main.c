@@ -27,6 +27,7 @@
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
+#include "adc.h"
 #include "common.h"
 #include "portmap_attiny84.h"
 #include "state.h"
@@ -36,6 +37,7 @@
 
 /* Constants */
 #define DEBOUNCE_CYCLE_COUNT 10000 // ~10ms, assumes 8MHz F_cpu/8
+#define SAMPLE_CYCLE_COUNT   200   // 40kHz
 
 /* Global variables */
 volatile BYTE state;
@@ -74,10 +76,19 @@ int main(void) {
     /* Set up TWI */
     // TODO
 
+    /* Set up ADC */
+    adc_init();
+    adc_set_prescaler(ADC_CLK_DIV_8);
+    adc_select(ADC0_ADC3_20); // read from ADC0, compare with ADC3, gain x20
+    adc_enable_int();
+
+    /* Set up ADC capture timer */
+    timer8_enable_int();
+    timer8_init(SAMPLE_CYCLE_COUNT, CLOCK_SCALE_1);
+
 // system initialization, including:
 // -ports:
 //   -set up TWI
-// -set up ADC capture timer (40kHz? 16-bit timer?)
 // -defaults and variables
 
     while(1);
@@ -107,15 +118,18 @@ ISR(INT0_vect) {
 ISR(TIM1_COMPA_vect) {
     // if the button is still held after the time interval
     if (bit_is_set(PINB, PB_BIT)) {
-        // TODO: finish switching stuff
+        while (adc_is_running()) // don't interrupt sampling
+            ;
         // if reading from ADC 2, switch to ADC1
         if (bit_is_set(state, PB_STATE)) {
+            adc_select(ADC0_ADC3_20);
             bit_clear(state, PB_STATE);
             bit_clear(PORTB, LED2_BIT);
             bit_set(PORTB, LED1_BIT);
         }
         // else, switch to ADC 2
         else {
+            adc_select(ADC1_ADC3_20);
             bit_set(state, PB_STATE);
             bit_clear(PORTB, LED1_BIT);
             bit_set(PORTB, LED2_BIT);
@@ -123,6 +137,10 @@ ISR(TIM1_COMPA_vect) {
     }
     timer16_stop();
     timer16_clear_flag();
+}
+
+ISR(TIM0_COMPA_vect) {
+    adc_start();
 }
 
 // other functions, may be here or eventually in other files:

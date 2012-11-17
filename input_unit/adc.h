@@ -93,5 +93,7 @@ DWORD adc_get_value16(void);
 BYTE adc_get_value8(void);
 void adc_start(void);
 void adc_clear_flag(void);
+BYTE adc_is_running(void);
+
 
 #endif
