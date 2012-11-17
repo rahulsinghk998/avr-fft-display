@@ -79,7 +79,7 @@ int main(void) {
     /* Set up ADC */
     adc_init();
     adc_set_prescaler(ADC_CLK_DIV_8);
-    adc_select(ADC0_ADC3_20); // read from ADC0, compare with ADC3, gain x20
+    adc_select(ADC0_ADC3_1); // read from ADC0, compare with ADC3, gain x1 for testing purposes
     adc_enable_int();
 
     /* Set up ADC capture timer */
@@ -122,14 +122,14 @@ ISR(TIM1_COMPA_vect) {
             ;
         // if reading from ADC 2, switch to ADC1
         if (bit_is_set(state, PB_STATE)) {
-            adc_select(ADC0_ADC3_20);
+            adc_select(ADC0_ADC3_1);
             bit_clear(state, PB_STATE);
             bit_clear(PORTB, LED2_BIT);
             bit_set(PORTB, LED1_BIT);
         }
         // else, switch to ADC 2
         else {
-            adc_select(ADC1_ADC3_20);
+            adc_select(ADC1_ADC3_1);
             bit_set(state, PB_STATE);
             bit_clear(PORTB, LED1_BIT);
             bit_set(PORTB, LED2_BIT);

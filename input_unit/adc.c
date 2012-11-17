@@ -42,6 +42,12 @@ void adc_set_prescaler(BYTE prescaler) {
 void adc_select(BYTE inputOption) {
     ADMUX &= 0xC0; // Zero out the bits 0-5
     switch (inputOption) {
+        case ADC0_ADC3_1:
+            ADMUX |= 0x0A;
+            break;
+        case ADC1_ADC3_1:
+            ADMUX |= 0x0E;
+            break;
         case ADC0_ADC3_20:
             ADMUX |= 0x0B;
             break;
