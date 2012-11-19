@@ -13,21 +13,16 @@
  
 #include <avr/io.h>
 #include <util/delay.h>
-#include "common.h"
- 
+#include "shift.h"
+
 int main()
 {
 	DDRB = 0xFF;
 	PORTB = 0x00;
-	char counter = 0;
 
 	while(1)
 	{
-		counter = 128; 				// Counter used for displaying a number in binary via the shift register
-		shift(PB1, PB2, PB3, counter);		// PB1 = SERCLK  PB2 = RCLK  PB3 = SER
-		_delay_ms(10);
-		shift(PB1, PB2, PB3, 0x00);		// Set all pins to off
-		_delay_ms(10);
+		lineRefresh();
 	}
 	return 0;
 }
