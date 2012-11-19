@@ -1,5 +1,6 @@
 /* Name: main.c
  * Author: Brian Dunlay
+ * Original Code from: http://bildr.org/2011/02/74hc595/
  * LED Matrix Controller for the ATtiny2313
  * 
  * HW configuration steps:
