@@ -20,7 +20,7 @@ CLOCK      = 8000000
 PROGRAMMER = -c usbtiny
 
 OBJECTS    = main.o timer8.o timer16.o common.o adc.o
-FUSES      = -U hfuse:w:0xd2:m -U lfuse:w:0xef:m -B250
+FUSES      = -U hfuse:w:0xdf:m -U lfuse:w:0xe2:m -B250
 
 # ATtiny84 fuse bits (fuse bits for other devices are different!)
 # Fuse high byte:
@@ -33,7 +33,7 @@ FUSES      = -U hfuse:w:0xd2:m -U lfuse:w:0xef:m -B250
 #        | +------------------ DWEN (if set to 0, DebugWIRE is on)
 #        +-------------------- RSTDISBL (if set to 0, RESET pin is disabled)
 # Fuse low byte:
-# 0x62 = 1 1 1 0   0 0 1 0
+# 0xe2 = 1 1 1 0   0 0 1 0
 #        ^ ^ \ /   \--+--/
 #        | |  |       +------- CKSEL 3..0 (8M internal RC)
 #        | |  +--------------- SUT 1..0 (slowly rising power)
