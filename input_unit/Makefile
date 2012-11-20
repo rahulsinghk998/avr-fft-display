@@ -19,7 +19,8 @@ DEVICE     = attiny84
 CLOCK      = 8000000 
 PROGRAMMER = -c usbtiny
 
-OBJECTS    = main.o timer8.o timer16.o common.o adc.o suart.S
+OBJECTS    = main.o timer8.o timer16.o common.o adc.o goertzel.o
+ASSEMBLY   = suart.S
 FUSES      = -U hfuse:w:0xdf:m -U lfuse:w:0xe2:m -B250
 
 # ATtiny84 fuse bits (fuse bits for other devices are different!)
@@ -83,7 +84,7 @@ clean:
 
 # file targets:
 main.elf: $(OBJECTS)
-	$(COMPILE) -o main.elf $(OBJECTS)
+	$(COMPILE) -o main.elf $(OBJECTS) $(ASSEMBLY)
 
 main.hex: main.elf
 	rm -f main.hex

@@ -29,6 +29,7 @@
 #include <avr/io.h>
 #include "adc.h"
 #include "common.h"
+#include "goertzel.h"
 #include "portmap_attiny84.h"
 #include "state.h"
 #include "suart.h"
