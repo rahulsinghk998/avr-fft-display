@@ -31,6 +31,7 @@
 #include "common.h"
 #include "portmap_attiny84.h"
 #include "state.h"
+#include "suart.h"
 #include "timer16.h"
 #include "timer8.h"
 #include "types.h"
@@ -73,8 +74,8 @@ int main(void) {
     timer16_enable_int();
     timer16_init(DEBOUNCE_CYCLE_COUNT, CLOCK_SCALE_8);
 
-    /* Set up TWI */
-    // TODO
+    /* Set up SUART */
+    suart_init();
 
     /* Set up ADC */
     adc_init();
