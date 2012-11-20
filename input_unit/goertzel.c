@@ -6,7 +6,7 @@
 
 #include "goertzel.h"
 
-void processSample(BYTE sample8bit) {
+void goertzel_process_sample(BYTE sample8bit) {
     DWORD s = (DWORD)sample8bit;
     BYTE i;
     // 16kHz
@@ -34,4 +34,38 @@ void processSample(BYTE sample8bit) {
         goertzelReady = 1;
         samplesProcessed = 0;
     }
+}
+
+BYTE goertzel_is_ready(void) {
+    return goertzelReady;
+}
+
+void goertzel_process_magnitudes(BYTE* results) {
+    BYTE i;
+    // level out the values over 255 and under -255
+    for (i=0; i<8; i++) {
+        if (0x8000 & q_0[i])
+            q_0[i] |= 0xFF00;
+        else
+            q_0[i] &= 0x00FF;
+        if (0x8000 & q_1[i])
+            q_1[i] |= 0xFF00;
+        else
+            q_1[i] &= 0x00FF;
+        if (0x8000 & q_2[i])
+            q_2[i] |= 0xFF00;
+        else
+            q_2[i] &= 0x00FF;
+    }        
+    // calculate squared magnitudes
+    for (i=0; i<8; i++0) {
+        results[i] = q_1[i]*q_1[i] + q_2[i]*q_2[i] - q_1*coeff_mult[q_2];
+    }
+    // clean up for next run
+    for (i=0; i<8; i++) {
+        q_0[i] = 0;
+        q_1[i] = 0;
+        q_2[i] = 0;
+    }
+    goertzelReady = 0;
 }

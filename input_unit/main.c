@@ -43,6 +43,7 @@
 
 /* Global variables */
 volatile BYTE state;
+volatile BYTE output[8];
 
 int main(void) {
 
@@ -143,6 +144,20 @@ ISR(TIM1_COMPA_vect) {
 
 ISR(TIM0_COMPA_vect) {
     adc_start();
+}
+
+ISR(ADC_vect) {
+    processSample(adc_get_value8());
+    if (goertzel_is_ready()) {
+        BYTE i;
+        timer8_stop(); // stop capturing samples
+        goertzel_process_magnitudes(output);
+        for (i=0; i<8; i++) {
+            // TODO: convert 16-bit mag^2 to 8-bit bar
+            // TODO: UART transmit
+        }
+        timer8_start(); // start capturing samples again
+    }
 }
 
 // other functions, may be here or eventually in other files:

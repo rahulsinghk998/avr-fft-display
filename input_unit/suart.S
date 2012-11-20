@@ -18,7 +18,7 @@
 #include "portmap_attiny84.h"
 .list
 
-#define	BPS	138	/* Bit delay. (see above table) */
+#define	BPS	68	/* Bit delay. (see above table) */
 #define	BIDIR	0	/* 0:Separated Tx/Rx, 1:Shared Tx/Rx */
 
 #define	OUT_1		cbi _SFR_IO_ADDR(PORTA), TX_BIT	    /* Output 1 */
