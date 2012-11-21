@@ -150,12 +150,13 @@ ISR(ADC_vect) {
     processSample(adc_get_value8());
     if (goertzel_is_ready()) {
         BYTE i;
+        DWORD output16[8];
         timer8_stop(); // stop capturing samples
-        goertzel_process_magnitudes(output);
-        for (i=0; i<8; i++) {
-            // TODO: convert 16-bit mag^2 to 8-bit bar
-            // TODO: UART transmit
-        }
+        goertzel_process_magnitudes(output16);
+        for (i=0; i<8; i++)
+            output[i] = sq16_to_bar8(output16[i]);
+        for (i=0; i<8; i++)
+            suart_xmit(output[i]);
         timer8_start(); // start capturing samples again
     }
 }

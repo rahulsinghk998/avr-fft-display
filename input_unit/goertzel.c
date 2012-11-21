@@ -40,7 +40,7 @@ BYTE goertzel_is_ready(void) {
     return goertzelReady;
 }
 
-void goertzel_process_magnitudes(BYTE* results) {
+void goertzel_process_magnitudes(DWORD* results) {
     BYTE i;
     // level out the values over 255 and under -255
     for (i=0; i<8; i++) {
