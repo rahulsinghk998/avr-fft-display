@@ -30,6 +30,6 @@ const static BYTE coeff_mult[5][256] PROGMEM = \
 
 void goertzel_process_sample(BYTE);
 BYTE goertzel_is_ready(void);
-void goertzel_process_magnitudes(BYTE*);
+void goertzel_process_magnitudes(DWORD*);
 
 #endif

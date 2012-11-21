@@ -147,7 +147,7 @@ ISR(TIM0_COMPA_vect) {
 }
 
 ISR(ADC_vect) {
-    processSample(adc_get_value8());
+    goertzel_process_sample(adc_get_value8());
     if (goertzel_is_ready()) {
         BYTE i;
         DWORD output16[8];

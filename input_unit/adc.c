@@ -39,6 +39,20 @@ void adc_set_prescaler(BYTE prescaler) {
     }
 }
 
+void adc_set_align(BYTE alignOption) {
+    switch (alignOption) {
+        case (ADC_LEFT_ALIGN):
+            bit_set(ADCSRB, ADLAR);
+            break;
+        case (ADC_RIGHT_ALIGN):
+            bit_clear(ADCSRB, ADLAR);
+            break;
+        default:
+            bit_clear(ADCSRB, ADLAR);
+            break;
+    }
+}
+
 void adc_select(BYTE inputOption) {
     ADMUX &= 0xC0; // Zero out the bits 0-5
     switch (inputOption) {
@@ -69,11 +83,17 @@ void adc_disable_int(void) {
 }
 
 DWORD adc_get_value16(void) {
-    return (DWORD)ADCL & ((DWORD)ADCH << 8);
+    if (bit_is_clear(ADCSRB, ADLAR))
+        return (DWORD)ADCL & ((DWORD)ADCH << 8);
+    else
+        return ((DWORD)ADCH << 2) & ((DWORD)ADCL >> 6);
 }
 
 BYTE adc_get_value8(void) {
-    return (ADCL >> 2) & (ADCH << 6);
+    if (bit_is_set(ADCSRB, ADLAR))
+        return ADCH;
+    else
+        return (ADCL >> 2) & (ADCH << 6);
 }
 
 void adc_start(void) {

@@ -69,9 +69,9 @@ suart_init:
 ;Prototype: void xmit (uint8_t data);
 ;Size: 16 words
 
-.global xmit
-.func xmit
-xmit:
+.global suart_xmit
+.func suart_xmit
+suart_xmit:
 #if BIDIR
 	ldi	r23, BPS-1	;Pre-idle time for bidirectional data line
 5:	dec	r23     	;
@@ -106,9 +106,9 @@ xmit:
 ;Prototype: uint8_t rcvr (void);
 ;Size: 19 words
 
-.global rcvr
-.func rcvr
-rcvr:
+.global suart_rcvr
+.func suart_rcvr
+suart_rcvr:
 	in	r0, _SFR_IO_ADDR(SREG)	;Save flags
 
 	ldi	r24, 0x80	;Receiving shift reg

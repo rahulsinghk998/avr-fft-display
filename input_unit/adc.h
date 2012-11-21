@@ -19,6 +19,11 @@ enum ADC_PRESCALER_OPTIONS {
     ADC_CLK_DIV_128
 };
 
+enum ADC_ALIGN_OPTIONS {
+    ADC_LEFT_ALIGN,
+    ADC_RIGHT_ALIGN
+};
+
 enum ADC_CHANNEL_OPTIONS {
     ADC0,
     ADC1,
@@ -86,6 +91,7 @@ enum ADC_CHANNEL_OPTIONS {
 
 void adc_init(void);
 void adc_set_prescaler(BYTE);
+void adc_set_align(BYTE);
 void adc_select(BYTE);
 void adc_enable_int(void);
 void adc_disable_int(void);
