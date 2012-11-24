@@ -55,14 +55,14 @@ int main(void) {
     bit_set(DDRB, LED2_BIT);
 
     /* Blink LEDs to show that we're on */
-    bit_set(PORTB, LED1_BIT);
-    bit_set(PORTB, LED2_BIT);
-    delay_ms(250);
     bit_clear(PORTB, LED1_BIT);
     bit_clear(PORTB, LED2_BIT);
     delay_ms(250);
+    bit_set(PORTB, LED1_BIT);
+    bit_set(PORTB, LED2_BIT);
+    delay_ms(250);
     // turn on LED associated with ADC1
-    bit_set(PORTB, LED1_BIT); 
+    bit_clear(PORTB, LED1_BIT); 
 
     /* Set up push button */
     bit_clear(DDRB, PB_BIT); // set as input
@@ -111,16 +111,16 @@ ISR(TIM1_COMPA_vect) {
         // if reading from ADC 2, switch to ADC1
         if (bit_is_set(state, PB_STATE)) {
             adc_select(ADC0_ADC3_1);
-            bit_clear(state, PB_STATE);
-            bit_clear(PORTB, LED2_BIT);
-            bit_set(PORTB, LED1_BIT);
+            bit_set(state, PB_STATE);
+            bit_set(PORTB, LED2_BIT);
+            bit_clear(PORTB, LED1_BIT);
         }
         // else, switch to ADC 2
         else {
             adc_select(ADC1_ADC3_1);
-            bit_set(state, PB_STATE);
-            bit_clear(PORTB, LED1_BIT);
-            bit_set(PORTB, LED2_BIT);
+            bit_clear(state, PB_STATE);
+            bit_set(PORTB, LED1_BIT);
+            bit_clear(PORTB, LED2_BIT);
         }
     }
     timer16_stop();
