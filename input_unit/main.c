@@ -111,14 +111,14 @@ ISR(TIM1_COMPA_vect) {
         // if reading from ADC 2, switch to ADC1
         if (bit_is_set(state, PB_STATE)) {
             adc_select(ADC0_ADC3_1);
-            bit_set(state, PB_STATE);
+            bit_clear(state, PB_STATE);
             bit_set(PORTB, LED2_BIT);
             bit_clear(PORTB, LED1_BIT);
         }
         // else, switch to ADC 2
         else {
             adc_select(ADC1_ADC3_1);
-            bit_clear(state, PB_STATE);
+            bit_set(state, PB_STATE);
             bit_set(PORTB, LED1_BIT);
             bit_clear(PORTB, LED2_BIT);
         }
