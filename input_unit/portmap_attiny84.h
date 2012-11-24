@@ -1,3 +1,9 @@
+/*
+ * portmap_attiny84.h
+ * Pin mapping of pins to ports for easier abstraction
+ * by William Moy
+ */
+
 #ifndef PORTMAP_ATTINY84_H
 #define PORTMAP_ATTINY84_H
 

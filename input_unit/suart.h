@@ -1,3 +1,8 @@
+/*
+ * suart.h
+ * Software UART header file, interface for elm-chan's SUART asm code.
+ */
+
 #ifndef SUART_H
 #define SUART_H
 

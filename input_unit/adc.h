@@ -1,7 +1,7 @@
 /*
- *
- *
- *
+ * adc.h
+ * ADC header file, includes ADC function declarations and enum definitions
+ * by William Moy
  */
 
 #ifndef ADC_H
@@ -9,6 +9,7 @@
 
 #include "types.h"
 
+// ADC prescaler options: select a F_cpu clock divider
 enum ADC_PRESCALER_OPTIONS {
     ADC_CLK_DIV_2,
     ADC_CLK_DIV_4,
@@ -19,11 +20,13 @@ enum ADC_PRESCALER_OPTIONS {
     ADC_CLK_DIV_128
 };
 
+// ADC output result alignment options
 enum ADC_ALIGN_OPTIONS {
     ADC_LEFT_ALIGN,
     ADC_RIGHT_ALIGN
 };
 
+// ADC input channel select options
 enum ADC_CHANNEL_OPTIONS {
     ADC0,
     ADC1,

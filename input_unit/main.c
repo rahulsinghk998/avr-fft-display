@@ -20,6 +20,7 @@
  * Version History:
  *    v0.0.1    pseudocode and comments
  *    v0.1      system initialization, LED toggle demo 
+ *    v0.2      completed implementation, untested on hardware
  *
  * Legal Stuff:
  *    If you use this code, at least credit me :)
@@ -46,9 +47,6 @@ volatile BYTE state;
 volatile BYTE output[8];
 
 int main(void) {
-
-    /* Variables */
-
     /* Initialize global variables */
     state = 0x00;
 
@@ -70,39 +68,26 @@ int main(void) {
     bit_clear(DDRB, PB_BIT); // set as input
     bit_clear(PORTB, PB_BIT); // <-unnecessary?
     bit_set(MCUCR, ISC00); // set to trigger on rising edge
-    bit_set(MCUCR, ISC01);
-    bit_set(GIMSK, INT0);
-    sei();
-    timer16_enable_int();
-    timer16_init(DEBOUNCE_CYCLE_COUNT, CLOCK_SCALE_8);
+    bit_set(MCUCR, ISC01); // set to trigger on rising edge
+    bit_set(GIMSK, INT0); // enable external pushbutton interrupt
+    sei(); // enable global interrupts
+    timer16_enable_int(); // enable timer interrupts
+    timer16_init(DEBOUNCE_CYCLE_COUNT, CLOCK_SCALE_8); // initialize timer
 
     /* Set up SUART */
     suart_init();
 
     /* Set up ADC */
-    adc_init();
-    adc_set_prescaler(ADC_CLK_DIV_8);
+    adc_init(); // initialize ADC hardware
+    adc_set_prescaler(ADC_CLK_DIV_8); // run ADC clock at 1MHz
     adc_select(ADC0_ADC3_1); // read from ADC0, compare with ADC3, gain x1 for testing purposes
-    adc_enable_int();
+    adc_enable_int(); // enable ADC interrupt on completed conversion
 
     /* Set up ADC capture timer */
-    timer8_enable_int();
-    timer8_init(SAMPLE_CYCLE_COUNT, CLOCK_SCALE_1);
-
-// system initialization, including:
-// -ports:
-//   -set up TWI
-// -defaults and variables
+    timer8_enable_int(); // enable sampling timer, 32kHz
+    timer8_init(SAMPLE_CYCLE_COUNT, CLOCK_SCALE_1); // initialize timer
 
     while(1);
-
-// start control loop
-// read sample from ADC, depending on which input is selected
-// fill dat buffer
-// compute FFT
-// post-process output from code, i.e. frequencies
-// send result through TWI
-// end loop
 
     return 0;
 }
@@ -113,7 +98,7 @@ ISR(INT0_vect) {
         // do nothing
     }
     else {
-        timer16_start();
+        timer16_start(); // start 10ms debouncing timer
     }
 }
 
@@ -142,10 +127,12 @@ ISR(TIM1_COMPA_vect) {
     timer16_clear_flag();
 }
 
+/* Start A to D conversion of audio sample */
 ISR(TIM0_COMPA_vect) {
     adc_start();
 }
 
+/* When a sample is taken, do calculations, and get frequency if ready */
 ISR(ADC_vect) {
     goertzel_process_sample(adc_get_value8());
     if (goertzel_is_ready()) {
@@ -154,25 +141,9 @@ ISR(ADC_vect) {
         timer8_stop(); // stop capturing samples
         goertzel_process_magnitudes(output16);
         for (i=0; i<8; i++)
-            output[i] = sq16_to_bar8(output16[i]);
+            output[i] = sq16_to_bar8(output16[i]); // convert to displayable
         for (i=0; i<8; i++)
-            suart_xmit(output[i]);
+            suart_xmit(output[i]); // send frame
         timer8_start(); // start capturing samples again
     }
 }
-
-// other functions, may be here or eventually in other files:
-// reset stuff?
-// butt stuff
-// helper functions (probably going to be in common.c)
-
-
-
-/* Possible extra features */
-// sleep, maybe with another button, or repurpose reset button
-// ???
-
-/* Design questions */
-// instead of using FFT, maybe use Goertzel algorithm?  we're only
-// looking at 8 frequencies, so a full FFT is likely unnecessary
-// con: we'd have to rename the project!  jay kay ell oh ell

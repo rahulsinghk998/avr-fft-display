@@ -1,3 +1,9 @@
+/*
+ * timer16.h
+ * 16-bit timer header file
+ * by William Moy
+ */
+
 #ifndef TIMER16_H
 #define TIMER16_H
 

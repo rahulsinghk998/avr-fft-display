@@ -1,3 +1,9 @@
+/*
+ * timer8.h
+ * 8-bit timer header file
+ * by William Moy
+ */
+
 #ifndef TIMER8_H
 #define TIMER8_H
 
