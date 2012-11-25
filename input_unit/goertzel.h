@@ -17,5 +17,6 @@
 void goertzel_process_sample(BYTE);
 BYTE goertzel_is_ready(void);
 void goertzel_process_magnitudes(DWORD*);
+void goertzel_reset(void);
 
 #endif

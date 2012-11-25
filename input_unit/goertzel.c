@@ -128,3 +128,15 @@ void goertzel_process_magnitudes(DWORD* results) {
     }
     goertzelReady = 0;
 }
+
+void goertzel_reset(void) {
+    BYTE i;
+    for (i=0; i<8; i++) {
+        q_0[i] = 0;
+        q_1[i] = 0;
+        q_2[i] = 0;
+    }
+    goertzelReady = 0;
+    samplesProcessed = 0;
+}
+    
