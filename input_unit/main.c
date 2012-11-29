@@ -39,7 +39,7 @@
 #include "types.h"
 
 /* Constants */
-#define DEBOUNCE_CYCLE_COUNT 10000 // ~10ms, assumes 8MHz F_cpu/8
+#define DEBOUNCE_CYCLE_COUNT 50000 // ~50ms, assumes 8MHz F_cpu/8
 #define SAMPLE_CYCLE_COUNT   200   // 40kHz
 
 /* Global variables */
