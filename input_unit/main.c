@@ -77,6 +77,15 @@ int main(void) {
     /* Set up SUART */
     suart_init();
 
+    /* Send test pattern over UART */
+    BYTE i;
+    for (i=0; i<8; i++)
+        suart_xmit(0xAA);
+    for (i=0; i<8; i++)
+        suart_xmit(0x55);
+    for (i=0; i<8; i++)
+        suart_xmit(0x00);
+
     /* Set up ADC */
     adc_init(); // initialize ADC hardware
     adc_set_prescaler(ADC_CLK_DIV_8); // run ADC clock at 1MHz
