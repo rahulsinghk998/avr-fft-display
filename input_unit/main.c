@@ -94,7 +94,7 @@ int main(void) {
     adc_enable_int(); // enable ADC interrupt on completed conversion
 
     /* Set up ADC capture timer */
-    timer8_enable_int(); // enable sampling timer, 32kHz
+    timer8_enable_int(); // enable sampling timer, 40kHz
     timer8_init(SAMPLE_CYCLE_COUNT, CLOCK_SCALE_1); // initialize timer
     timer8_start();
 
