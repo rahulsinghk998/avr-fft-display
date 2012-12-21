@@ -28,14 +28,14 @@ enum ADC_ALIGN_OPTIONS {
 
 // ADC input channel select options
 enum ADC_CHANNEL_OPTIONS {
-    ADC0,
-    ADC1,
-    ADC2,
-    ADC3,
-    ADC4,
-    ADC5,
-    ADC6,
-    ADC7,
+    ADC0_SINGLE,
+    ADC1_SINGLE,
+    ADC2_SINGLE,
+    ADC3_SINGLE,
+    ADC4_SINGLE,
+    ADC5_SINGLE,
+    ADC6_SINGLE,
+    ADC7_SINGLE,
     ADC0_ADC0_1,
     ADC0_ADC1_1,
     ADC0_ADC3_1,

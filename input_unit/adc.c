@@ -92,6 +92,12 @@ void adc_set_align(BYTE alignOption) {
 void adc_select(BYTE inputOption) {
     ADMUX &= 0xC0; // Zero out the bits 0-5
     switch (inputOption) {
+        case ADC0_SINGLE:
+            // leave as zeros
+            break;
+        case ADC1_SINGLE:
+            ADMUX |= 0x01;
+            break;
         case ADC0_ADC3_1:
             ADMUX |= 0x0A;
             break;
