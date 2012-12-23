@@ -151,9 +151,9 @@ void adc_disable_int(void) {
  */
 DWORD adc_get_value16(void) {
     if (bit_is_clear(ADCSRB, ADLAR))
-        return (DWORD)ADCL & ((DWORD)ADCH << 8);
+        return ADC;
     else
-        return ((DWORD)ADCH << 2) & ((DWORD)ADCL >> 6);
+        return ADC >> 6;
 }
 
 /** 
