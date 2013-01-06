@@ -30,7 +30,7 @@ void adc_init(void) {
  *  none
  */
 void adc_set_prescaler(BYTE prescaler) {
-    ADCSRA &= 0xF8; // Zero out the biis 0-2
+    ADCSRA &= ~(ADC_CLK_DIV_MASK); // Zero out the biis 0-2
     ADCSRA |= prescaler;
 }
 
@@ -45,17 +45,8 @@ void adc_set_prescaler(BYTE prescaler) {
  *  none
  */
 void adc_set_align(BYTE alignOption) {
-    switch (alignOption) {
-        case (ADC_LEFT_ALIGN):
-            bit_set(ADCSRB, ADLAR);
-            break;
-        case (ADC_RIGHT_ALIGN):
-            bit_clear(ADCSRB, ADLAR);
-            break;
-        default:
-            bit_clear(ADCSRB, ADLAR);
-            break;
-    }
+    ADCSRB &= ~(ADC_ALIGN_MASK);
+    ADCSRB |= alignOption;
 }
 
 /** 
@@ -68,30 +59,9 @@ void adc_set_align(BYTE alignOption) {
  *  none
  */
 void adc_select(BYTE inputOption) {
-    ADMUX &= 0xC0; // Zero out the bits 0-5
-    switch (inputOption) {
-        case ADC0_SINGLE:
-            // leave as zeros
-            break;
-        case ADC1_SINGLE:
-            ADMUX |= 0x01;
-            break;
-        case ADC0_ADC3_1:
-            ADMUX |= 0x0A;
-            break;
-        case ADC1_ADC3_1:
-            ADMUX |= 0x0E;
-            break;
-        case ADC0_ADC3_20:
-            ADMUX |= 0x0B;
-            break;
-        case ADC1_ADC3_20:
-            ADMUX |= 0x0F;
-            break;
-        default:
-            ADMUX |= 0x20; // compare to GND
-            break;
-    }
+    ADMUX &= ~(ADC_CHANNEL_MASK); // Zero out the bits 0-5
+    ADMUX |= inputOption;
+    
 }
 
 /** 

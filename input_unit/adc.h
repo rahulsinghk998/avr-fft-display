@@ -8,34 +8,35 @@
 #define ADC_H
 
 #include "types.h"
+#include <avr/io.h>
 
 // ADC prescaler options: select a F_cpu clock divider
-enum ADC_PRESCALER_OPTIONS {
-    ADC_CLK_DIV_2 = 1,
-    ADC_CLK_DIV_4,
-    ADC_CLK_DIV_8,
-    ADC_CLK_DIV_16,
-    ADC_CLK_DIV_32,
-    ADC_CLK_DIV_64,
-    ADC_CLK_DIV_128
-};
+#define ADC_CLK_DIV_MASK    0b00000111
+#define ADC_CLK_DIV_2       0b00000001
+#define ADC_CLK_DIV_4       0b00000010
+#define ADC_CLK_DIV_8       0b00000011
+#define ADC_CLK_DIV_16      0b00000100
+#define ADC_CLK_DIV_32      0b00000101
+#define ADC_CLK_DIV_64      0b00000110
+#define ADC_CLK_DIV_128     0b00000111
 
 // ADC output result alignment options
-enum ADC_ALIGN_OPTIONS {
-    ADC_LEFT_ALIGN,
-    ADC_RIGHT_ALIGN
-};
+#define ADC_ALIGN_MASK      0b00010000
+#define ADC_RIGHT_ALIGN     0b00000000
+#define ADC_LEFT_ALIGN      0b00010000
+
+#define ADC_CHANNEL_MASK    0b00011111
+#define ADC0_SINGLE         0b00000000
+#define ADC1_SINGLE         0b00000001
+#define ADC2_SINGLE         0b00000010
+#define ADC3_SINGLE         0b00000011
+#define ADC4_SINGLE         0b00000100
+#define ADC5_SINGLE         0b00000101
+#define ADC6_SINGLE         0b00000110
+#define ADC7_SINGLE         0b00000111
 
 // ADC input channel select options
-enum ADC_CHANNEL_OPTIONS {
-    ADC0_SINGLE = 0,
-    ADC1_SINGLE,
-    ADC2_SINGLE,
-    ADC3_SINGLE,
-    ADC4_SINGLE,
-    ADC5_SINGLE,
-    ADC6_SINGLE,
-    ADC7_SINGLE,
+/*enum ADC_CHANNEL_OPTIONS {
     ADC0_ADC0_1,
     ADC0_ADC1_1,
     ADC0_ADC3_1,
@@ -90,7 +91,7 @@ enum ADC_CHANNEL_OPTIONS {
     ADC7_ADC3_20,
     ADC7_ADC6_20,
     ADC7_ADC7_20
-};
+};*/
 
 void adc_init(void);
 void adc_set_prescaler(BYTE);
