@@ -11,7 +11,7 @@
 
 // ADC prescaler options: select a F_cpu clock divider
 enum ADC_PRESCALER_OPTIONS {
-    ADC_CLK_DIV_2,
+    ADC_CLK_DIV_2 = 1,
     ADC_CLK_DIV_4,
     ADC_CLK_DIV_8,
     ADC_CLK_DIV_16,
@@ -28,7 +28,7 @@ enum ADC_ALIGN_OPTIONS {
 
 // ADC input channel select options
 enum ADC_CHANNEL_OPTIONS {
-    ADC0_SINGLE,
+    ADC0_SINGLE = 0,
     ADC1_SINGLE,
     ADC2_SINGLE,
     ADC3_SINGLE,

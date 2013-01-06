@@ -31,29 +31,7 @@ void adc_init(void) {
  */
 void adc_set_prescaler(BYTE prescaler) {
     ADCSRA &= 0xF8; // Zero out the biis 0-2
-    switch (prescaler) {
-        case ADC_CLK_DIV_2:
-            ADCSRA |= 1;
-            break;
-        case ADC_CLK_DIV_4:
-            ADCSRA |= 2;
-            break;
-        case ADC_CLK_DIV_8:
-            ADCSRA |= 3;
-            break;
-        case ADC_CLK_DIV_16:
-            ADCSRA |= 4;
-            break;
-        case ADC_CLK_DIV_32:
-            ADCSRA |= 5;
-            break;
-        case ADC_CLK_DIV_64:
-            ADCSRA |= 6;
-            break;
-        case ADC_CLK_DIV_128:
-            ADCSRA |= 7;
-            break;
-    }
+    ADCSRA |= prescaler;
 }
 
 /** 
