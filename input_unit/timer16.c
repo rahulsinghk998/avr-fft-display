@@ -33,42 +33,8 @@ void timer16_start(void) {
     TCNT1 = 0;
 
     // Set the prescaler and start the timer
-    switch (clockOption) {
-		case DISABLE_TIMER:
-            TCCR1B &= ~(_BV(CS10) | _BV(CS11) | _BV(CS12));
-		break;
-		case CLOCK_SCALE_1:
-            TCCR1B |= _BV(CS10);
-            TCCR1B &= ~(_BV(CS11) | _BV(CS12));
-		break;
-		case CLOCK_SCALE_8:
-            TCCR1B |= _BV(CS11);
-            TCCR1B &= ~(_BV(CS10) | _BV(CS12));
-		break;
-		case CLOCK_SCALE_64:
-            TCCR1B |= _BV(CS10) | _BV(CS11);
-            TCCR1B &= ~(_BV(CS12));
-		break;
-		case CLOCK_SCALE_256:
-            TCCR1B |= _BV(CS12);
-            TCCR1B &= ~(_BV(CS10) | _BV(CS11));
-		break;
-		case CLOCK_SCALE_1024:
-            TCCR1B |= _BV(CS10) | _BV(CS12);
-            TCCR1B &= ~(_BV(CS11));
-		break;
-		case EXT_CLOCK_FALLING:
-            TCCR1B |= _BV(CS11) | _BV(CS12);
-            TCCR1B &= ~(_BV(CS10));
-		break;
-		case EXT_CLOCK_RISING:
-            TCCR1B |= _BV(CS10) | _BV(CS11) | _BV(CS12);
-		break;
-		default:
-            TCCR1B &= ~(_BV(CS10) | _BV(CS11) | _BV(CS12));
-			return;
-		break;
-	}
+    TCCR1B &= 0b11111000; // zero out the first 3 bits
+    TCCR1B |= clockOption;
 
 }
 
