@@ -34,8 +34,11 @@ static const BYTE coeff_mult[5][256] PROGMEM = \
  * Performs one iteration of the Goertzel algorithm.  This is done for each
  * sample from 1 to N.  Updates the Q_x values with each iteration.  Some
  * speedups and tricks are used here.  A multiplication lookup table is used to
- * remove any actual multiplication operations.  cos(1/2*2*pi) = -1 and
- * cos(1/4*2*pi) = 0 are use to completely bypass the need for any simulated
+ * remove any actual multiplication operations.
+ * cos(1/1*2*pi) = 1
+ * cos(1/2*2*pi) = -1
+ * cos(1/4*2*pi) = 0
+ * are used to completely bypass the need for any simulated
  * multiplication.  cos(1/256*2*pi) = ~1 is close enough to ignore the
  * coefficient entirely, BUT is untested.
  * args:
@@ -46,22 +49,22 @@ static const BYTE coeff_mult[5][256] PROGMEM = \
 void goertzel_process_sample(BYTE sample8bit) {
     DWORD s = (DWORD)sample8bit;
     BYTE i;
+    // sample frequency
+    q_0[0] = q_1[0] + q_1[0] - q_2[0] + s;
     // sample frequency / 2
-    q_0[0] = -q_1[0] - q_1[0] - q_2[0] + s;
+    q_0[1] = -q_1[1] - q_1[1] - q_2[1] + s;
     // F_s / 4
-    q_0[1] = -q_2[1] + s;
+    q_0[2] = -q_2[2] + s;
     // F_s / 8
-    q_0[2] = coeff_mult[0][q_1[2]]*2 - q_2[2] + s;
+    q_0[3] = coeff_mult[0][q_1[3]]*2 - q_2[3] + s;
     // F_s / 16
-    q_0[3] = coeff_mult[1][q_1[3]]*2 - q_2[3] + s;
+    q_0[4] = coeff_mult[1][q_1[4]]*2 - q_2[4] + s;
     // F_s / 32 
-    q_0[4] = coeff_mult[2][q_1[4]]*2 - q_2[4] + s;
+    q_0[5] = coeff_mult[2][q_1[5]]*2 - q_2[5] + s;
     // F_s / 64
-    q_0[5] = coeff_mult[3][q_1[5]]*2 - q_2[5] + s;
+    q_0[6] = coeff_mult[3][q_1[6]]*2 - q_2[6] + s;
     // F_s / 128
-    q_0[6] = coeff_mult[4][q_1[6]]*2 - q_2[6] + s;
-    // F_s / 256 
-    q_0[7] = q_1[7]*2 - q_2[7] + s;
+    q_0[7] = coeff_mult[4][q_1[7]]*2 - q_2[7] + s;
     // Update older Q values
     for (i=0; i<8; i++) {
         q_1[i] = q_0[i];

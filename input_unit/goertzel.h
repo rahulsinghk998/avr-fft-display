@@ -12,7 +12,7 @@
 #include "types.h"
 #include <avr/pgmspace.h>
 
-#define N_SAMPLES 400
+#define N_SAMPLES 256
 
 void goertzel_process_sample(BYTE);
 BYTE goertzel_is_ready(void);
