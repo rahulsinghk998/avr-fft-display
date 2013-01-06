@@ -115,14 +115,14 @@ void goertzel_process_magnitudes(DWORD* results) {
             q_2[i] &= 0x00FF;
     }        
     // calculate squared magnitudes
-    results[0] = q_1[0]*q_1[0] + q_2[0]*q_2[0] + q_1[0]*q_2[0]; // TODO: this is right?!
-    results[1] = q_1[1]*q_1[1] + q_2[1]*q_2[1];
-    results[2] = q_1[2]*q_1[2] + q_2[2]*q_2[2] - q_1[2]*coeff_mult[0][q_2[2]];
-    results[3] = q_1[3]*q_1[3] + q_2[3]*q_2[3] - q_1[3]*coeff_mult[1][q_2[3]];
-    results[4] = q_1[4]*q_1[4] + q_2[4]*q_2[4] - q_1[4]*coeff_mult[2][q_2[4]];
-    results[5] = q_1[5]*q_1[5] + q_2[5]*q_2[5] - q_1[5]*coeff_mult[3][q_2[5]];
-    results[6] = q_1[6]*q_1[6] + q_2[6]*q_2[6] - q_1[6]*coeff_mult[4][q_2[6]];
-    results[7] = q_1[7]*q_1[7] + q_2[7]*q_2[7] - q_1[7]*q_2[7];
+    results[0] = q_1[0]*q_1[0] + q_2[0]*q_2[0] - q_1[0]*q_2[0];
+    results[1] = q_1[1]*q_1[1] + q_2[1]*q_2[1] + q_1[1]*q_2[1];
+    results[2] = q_1[2]*q_1[2] + q_2[2]*q_2[2];
+    results[3] = q_1[3]*q_1[3] + q_2[3]*q_2[3] - q_1[3]*coeff_mult[0][q_2[3]];
+    results[4] = q_1[4]*q_1[4] + q_2[4]*q_2[4] - q_1[4]*coeff_mult[1][q_2[4]];
+    results[4] = q_1[5]*q_1[5] + q_2[5]*q_2[5] - q_1[5]*coeff_mult[2][q_2[5]];
+    results[5] = q_1[6]*q_1[6] + q_2[6]*q_2[6] - q_1[6]*coeff_mult[3][q_2[6]];
+    results[6] = q_1[7]*q_1[7] + q_2[7]*q_2[7] - q_1[7]*coeff_mult[4][q_2[7]];
     // clean up for next run
     for (i=0; i<8; i++) {
         q_0[i] = 0;
