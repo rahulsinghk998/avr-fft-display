@@ -14,11 +14,13 @@ static DWORD samplesProcessed = 0;
 // boolean describing if all the samples have been processed and is ready
 // for magnitude calculation
 static BYTE goertzelReady = 0;
+// scale factor for shifting an overflowed 8-bit number
+static BYTE scaleFactor = 0;
 
 // variables kept over each sample iteration
-static DWORD q_0[8] = {0};
-static DWORD q_1[8] = {0};
-static DWORD q_2[8] = {0};
+static sDWORD q_0[8] = {0};
+static sDWORD q_1[8] = {0};
+static sDWORD q_2[8] = {0};
 
 // Multiplication table for fast lookups.  Imitates coeff * value.
 // The first dimension is a separate case for each distinct coefficient
@@ -47,8 +49,9 @@ static const BYTE coeff_mult[5][256] PROGMEM = \
  *  none
  */
 void goertzel_process_sample(BYTE sample8bit) {
-    DWORD s = (DWORD)sample8bit;
+    sDWORD s;
     BYTE i;
+    s = (sDWORD)(sample8bit >> scaleFactor);
     // sample frequency
     q_0[0] = q_1[0] + q_1[0] - q_2[0] + s;
     // sample frequency / 2
@@ -56,7 +59,7 @@ void goertzel_process_sample(BYTE sample8bit) {
     // F_s / 4
     q_0[2] = -q_2[2] + s;
     // F_s / 8
-    q_0[3] = coeff_mult[0][q_1[3]]*2 - q_2[3] + s;
+    q_0[3] = coeff_mult[0][q_1[3]]*2 - q_2[3] + s; // TODO: correction for negative signs
     // F_s / 16
     q_0[4] = coeff_mult[1][q_1[4]]*2 - q_2[4] + s;
     // F_s / 32 
@@ -65,6 +68,16 @@ void goertzel_process_sample(BYTE sample8bit) {
     q_0[6] = coeff_mult[3][q_1[6]]*2 - q_2[6] + s;
     // F_s / 128
     q_0[7] = coeff_mult[4][q_1[7]]*2 - q_2[7] + s;
+    // Check for overflow, if overflowed, then shift everything down
+    for (i=0; i<8; i++) {
+        if ((q_0[i] & 0x0100) || (-q_0[i] & 0x0100)) {
+            for (i=0; i<8; i++) {
+                q_0[i] >>= 1;
+            }
+            scaleFactor++;
+            break;
+        }
+    }
     // Update older Q values
     for (i=0; i<8; i++) {
         q_1[i] = q_0[i];
@@ -130,6 +143,7 @@ void goertzel_process_magnitudes(DWORD* results) {
         q_2[i] = 0;
     }
     goertzelReady = 0;
+    scaleFactor = 0;
 }
 
 void goertzel_reset(void) {

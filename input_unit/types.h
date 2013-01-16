@@ -11,7 +11,9 @@
 #include <stdint.h>
 
 typedef uint8_t BYTE;
+typedef int8_t sBYTE;
 typedef uint8_t WORD;
 typedef uint16_t DWORD;
+typedef int16_t sDWORD;
 
 #endif
