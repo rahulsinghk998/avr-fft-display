@@ -51,6 +51,7 @@ static const BYTE coeff_mult[5][256] PROGMEM = \
 void goertzel_process_sample(BYTE sample8bit) {
     sDWORD s;
     BYTE i;
+    // scale the input down if overflow was previously detected
     s = (sDWORD)(sample8bit >> scaleFactor);
     // sample frequency
     q_0[0] = q_1[0] + q_1[0] - q_2[0] + s;
@@ -112,22 +113,8 @@ BYTE goertzel_is_ready(void) {
  */
 void goertzel_process_magnitudes(DWORD* results) {
     BYTE i;
-    // level out the values over 255 and under -255
-    for (i=0; i<8; i++) {
-        if (0x8000 & q_0[i])
-            q_0[i] |= 0xFF00;
-        else
-            q_0[i] &= 0x00FF;
-        if (0x8000 & q_1[i])
-            q_1[i] |= 0xFF00;
-        else
-            q_1[i] &= 0x00FF;
-        if (0x8000 & q_2[i])
-            q_2[i] |= 0xFF00;
-        else
-            q_2[i] &= 0x00FF;
-    }        
     // calculate squared magnitudes
+    // TODO: overflow checking?
     results[0] = q_1[0]*q_1[0] + q_2[0]*q_2[0] - q_1[0]*q_2[0];
     results[1] = q_1[1]*q_1[1] + q_2[1]*q_2[1] + q_1[1]*q_2[1];
     results[2] = q_1[2]*q_1[2] + q_2[2]*q_2[2];
@@ -155,5 +142,6 @@ void goertzel_reset(void) {
     }
     goertzelReady = 0;
     samplesProcessed = 0;
+    scaleFactor = 0;
 }
     
