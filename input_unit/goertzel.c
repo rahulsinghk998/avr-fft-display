@@ -82,7 +82,7 @@ void goertzel_process_sample(BYTE sample8bit) {
     // Check for overflow, if overflowed, then shift everything down
     for (i=0; i<8; i++) {
         t = (BYTE)(q_0[i] >> 8); // TODO: check if 8 LSL is inefficient
-        if ((t > 0 && t & 0x7F) || (t < 0 && t | 0x7F)) {
+        if ((t > 0 && t & 0x7F) || (t < 0 && ~t | 0x7F)) {
             for (i=0; i<8; i++) {
                 q_0[i] >>= 1;
             }
