@@ -50,7 +50,7 @@ static const BYTE coeff_mult[5][256] PROGMEM = \
  */
 void goertzel_process_sample(BYTE sample8bit) {
     sDWORD s;
-    BYTE i;
+    BYTE i, t;
     // scale the input down if overflow was previously detected
     s = (sDWORD)(sample8bit >> scaleFactor);
     // sample frequency
@@ -60,18 +60,29 @@ void goertzel_process_sample(BYTE sample8bit) {
     // F_s / 4
     q_0[2] = -q_2[2] + s;
     // F_s / 8
-    q_0[3] = coeff_mult[0][q_1[3]]*2 - q_2[3] + s; // TODO: correction for negative signs
+    t = (q_1[3] >= 0) ? coeff_mult[0][(BYTE)(q_1[3])] : \
+                        -coeff_mult[0][(BYTE)(-q_1[3])];
+    q_0[3] = t*2 - q_2[3] + s;
     // F_s / 16
-    q_0[4] = coeff_mult[1][q_1[4]]*2 - q_2[4] + s;
+    t = (q_1[4] >= 0) ? coeff_mult[1][(BYTE)(q_1[4])] : \
+                        -coeff_mult[1][(BYTE)(-q_1[4])];
+    q_0[4] = t*2 - q_2[4] + s;
     // F_s / 32 
-    q_0[5] = coeff_mult[2][q_1[5]]*2 - q_2[5] + s;
+    t = (q_1[5] >= 0) ? coeff_mult[2][(BYTE)(q_1[5])] : \
+                        -coeff_mult[2][(BYTE)(-q_1[5])];
+    q_0[5] = t*2 - q_2[5] + s;
     // F_s / 64
-    q_0[6] = coeff_mult[3][q_1[6]]*2 - q_2[6] + s;
+    t = (q_1[6] >= 0) ? coeff_mult[3][(BYTE)(q_1[6])] : \
+                        -coeff_mult[3][(BYTE)(-q_1[6])];
+    q_0[6] = t*2 - q_2[6] + s;
     // F_s / 128
-    q_0[7] = coeff_mult[4][q_1[7]]*2 - q_2[7] + s;
+    t = (q_1[7] >= 0) ? coeff_mult[4][(BYTE)(q_1[7])] : \
+                        -coeff_mult[4][(BYTE)(-q_1[7])];
+    q_0[7] = t*2 - q_2[7] + s;
     // Check for overflow, if overflowed, then shift everything down
     for (i=0; i<8; i++) {
-        if ((q_0[i] & 0x0100) || (-q_0[i] & 0x0100)) {
+        t = (BYTE)(q_0[i] >> 8); // TODO: check if 8 LSL is inefficient
+        if ((t > 0 && t & 0x7F) || (t < 0 && t | 0x7F)) {
             for (i=0; i<8; i++) {
                 q_0[i] >>= 1;
             }
