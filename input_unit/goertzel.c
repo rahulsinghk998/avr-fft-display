@@ -84,7 +84,7 @@ void goertzel_process_sample(BYTE sample8bit) {
         t = (BYTE)(q_0[i] >> 8);
         if ((t > 0 && t & 0x7F) || (t < 0 && ~t | 0x7F)) {
             for (i=0; i<8; i++) {
-                q_0[i] >>= 1;
+                q_0[i] /= 2;
             }
             scaleFactor++;
             break;
@@ -98,6 +98,7 @@ void goertzel_process_sample(BYTE sample8bit) {
     if (++samplesProcessed >= N_SAMPLES) {
         goertzelReady = 1;
         samplesProcessed = 0;
+        scaleFactor = 0;
     }
 }
 
@@ -141,7 +142,6 @@ void goertzel_process_magnitudes(DWORD* results) {
         q_2[i] = 0;
     }
     goertzelReady = 0;
-    scaleFactor = 0;
 }
 
 void goertzel_reset(void) {
