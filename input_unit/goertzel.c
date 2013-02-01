@@ -87,8 +87,8 @@ void goertzel_process_sample(BYTE sample8bit) {
             for (i=0; i<8; i++) {
                 for (j=0; j<t; j++) {
                     q_0[i] /= 2;
+                    scaleFactor++;
                 }
-                scaleFactor++;
             }
             break;
         }
@@ -97,8 +97,8 @@ void goertzel_process_sample(BYTE sample8bit) {
             for (i=0; i<8; i++) {
                 for (j=0; j<t; j++) {
                     q_0[i] /=2;
+                    scaleFactor++;
                 }
-                scaleFactor++;
             }
             break;
         }
