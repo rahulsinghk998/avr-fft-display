@@ -80,6 +80,8 @@ load: all
 clean:
 	rm -f main.hex main.elf $(OBJECTS)
 	rm -f mainasm.txt
+	rm -f srecsize
+	rm -f sizes.txt
 
 # file targets:
 main.elf: $(OBJECTS)
@@ -95,6 +97,18 @@ main.hex: main.elf
 # Targets for code debugging and analysis:
 disasm:	main.elf
 	avr-objdump -d -S main.elf > mainasm.txt
+
+sizes: main.elf srecsize
+	rm -f sizes.txt
+	for obj in $(OBJECTS); \
+	do \
+		avr-objcopy -O srec $${obj} $${obj}.srec; \
+		./srecsize $${obj} < $${obj}.srec >> sizes.txt; \
+		rm $${obj}.srec; \
+	done;
+
+srecsize:
+	gcc srecsize.c -o srecsize
 
 cpp:
 	$(COMPILE) -E main.c
