@@ -51,6 +51,7 @@ static const BYTE coeff_mult[5][256] PROGMEM = \
 void goertzel_process_sample(BYTE sample8bit) {
     sDWORD s;
     BYTE i, j, t, maxOverflow;
+    sBYTE st;
     // scale the input down if overflow was previously detected
     s = (sDWORD)(sample8bit >> scaleFactor);
     // sample frequency
@@ -82,12 +83,14 @@ void goertzel_process_sample(BYTE sample8bit) {
     // Check for overflow, if overflowed, then shift everything down
     maxOverflow = 0;
     for (i=0; i<8; i++) {
-        t = (sBYTE)(q_0[i] >> 8);
+        st = (sBYTE)((q_0[i] >> 8) & 0xFF);
         if (t < 0)
-            t = -t;
+            st = -st;
         if (t > maxOverflow)
-            maxOverflow = t;
+            maxOverflow = st;
     }
+    if (maxOverflow > maxmaxOverflow)
+        maxmaxOverflow = maxOverflow;
     for (i=0; i<8; i++) {
         for (j=0; j<maxOverflow; j++) {
             q_0[i] >>= 1;
@@ -129,25 +132,37 @@ BYTE goertzel_is_ready(void) {
  */
 void goertzel_process_magnitudes(DWORD* results) {
     BYTE i;
+    sDWORD t;
+    sDWORD* sResults = results;
     // calculate squared magnitudes
     // TODO: overflow checking?
-    results[0] = q_1[0]*q_1[0] - q_1[0]*q_2[0] + q_2[0]*q_2[0]; 
-    results[1] = q_1[1]*q_1[1] + q_2[1]*q_2[1] + q_1[1]*q_2[1];
-    results[2] = q_1[2]*q_1[2] + q_2[2]*q_2[2];
-    results[3] = q_1[3]*q_1[3] \
-                 - q_1[3]*coeff_mult[0][(BYTE)(q_2[3])] \
+    sResults[0] = q_1[0]*q_1[0] - q_1[0]*q_2[0] + q_2[0]*q_2[0]; 
+    sResults[1] = q_1[1]*q_1[1] + q_2[1]*q_2[1] + q_1[1]*q_2[1];
+    sResults[2] = q_1[2]*q_1[2] + q_2[2]*q_2[2];
+    t = (q_2[3] > 0) ? 0x0000 & coeff_mult[0][(BYTE)(q_2[3])] : \
+                       0xFFFF & -coeff_mult[0][(BYTE)(-q_2[3])];
+    sResults[3] = q_1[3]*q_1[3] \
+                 - q_1[3]*t\
                  + q_2[3]*q_2[3];
-    results[4] = q_1[4]*q_1[4] \
-                 - q_1[4]*coeff_mult[1][(BYTE)(q_2[4])] \
+    t = (q_2[4] > 0) ? 0x0000 & coeff_mult[1][(BYTE)(q_2[4])] : \
+                       0xFFFF & -coeff_mult[1][(BYTE)(-q_2[4])];
+    sResults[4] = q_1[4]*q_1[4] \
+                 - q_1[4]*t \
                  + q_2[4]*q_2[4];
-    results[4] = q_1[5]*q_1[5] \
-                 - q_1[5]*coeff_mult[2][(BYTE)(q_2[5])] \
+    t = (q_2[5] > 0) ? 0x0000 & coeff_mult[2][(BYTE)(q_2[5])] : \
+                       0xFFFF & -coeff_mult[2][(BYTE)(-q_2[5])];
+    sResults[5] = q_1[5]*q_1[5] \
+                 - q_1[5]*t \
                  + q_2[5]*q_2[5];
-    results[5] = q_1[6]*q_1[6] \
-                 - q_1[6]*coeff_mult[3][(BYTE)(q_2[6])] \
+    t = (q_2[6] > 0) ? 0x0000 & coeff_mult[3][(BYTE)(q_2[6])] : \
+                       0xFFFF & -coeff_mult[3][(BYTE)(-q_2[6])];
+    sResults[6] = q_1[6]*q_1[6] \
+                 - q_1[6]*t \
                  + q_2[6]*q_2[6];
-    results[6] = q_1[7]*q_1[7] \
-                 - q_1[7]*coeff_mult[4][(BYTE)(q_2[7])] \
+    t = (q_2[7] > 0) ? 0x0000 & coeff_mult[4][(BYTE)(q_2[7])] : \
+                       0xFFFF & -coeff_mult[4][(BYTE)(-q_2[7])];
+    sResults[7] = q_1[7]*q_1[7] \
+                 - q_1[7]*t \
                  + q_2[7]*q_2[7];
     // clean up for next run
     for (i=0; i<8; i++) {
