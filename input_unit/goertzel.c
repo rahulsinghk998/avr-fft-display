@@ -131,7 +131,7 @@ BYTE goertzel_is_ready(void) {
 void goertzel_process_magnitudes(DWORD* results) {
     BYTE i;
     sDWORD t;
-    sDWORD* sResults = results;
+    sDWORD* sResults = (sDWORD*)results;
     // calculate squared magnitudes
     // TODO: overflow checking?
     sResults[0] = q_1[0]*q_1[0] - q_1[0]*q_2[0] + q_2[0]*q_2[0]; 
