@@ -89,8 +89,6 @@ void goertzel_process_sample(BYTE sample8bit) {
         if (t > maxOverflow)
             maxOverflow = st;
     }
-    if (maxOverflow > maxmaxOverflow)
-        maxmaxOverflow = maxOverflow;
     for (i=0; i<8; i++) {
         for (j=0; j<maxOverflow; j++) {
             q_0[i] >>= 1;
