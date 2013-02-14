@@ -50,7 +50,7 @@ static const BYTE coeff_mult[5][256] PROGMEM = \
  */
 void goertzel_process_sample(BYTE sample8bit) {
     sDWORD s;
-    BYTE i, j, t;
+    BYTE i, j, t, maxOverflow;
     // scale the input down if overflow was previously detected
     s = (sDWORD)(sample8bit >> scaleFactor);
     // sample frequency
@@ -80,27 +80,18 @@ void goertzel_process_sample(BYTE sample8bit) {
                         -coeff_mult[4][(BYTE)(-q_1[7])];
     q_0[7] = t*2 - q_2[7] + s;
     // Check for overflow, if overflowed, then shift everything down
+    maxOverflow = 0;
     for (i=0; i<8; i++) {
-        t = (BYTE)(q_0[i] >> 8);
-        if ((t > 0) && (t & 0x7F)) {
-            t &= 0x7F;
-            for (i=0; i<8; i++) {
-                for (j=0; j<t; j++) {
-                    q_0[i] /= 2;
-                    scaleFactor++;
-                }
-            }
-            break;
-        }
-        if ((t < 0) && (-t & 0x7F)) {
-            t = -t & 0x7F;
-            for (i=0; i<8; i++) {
-                for (j=0; j<t; j++) {
-                    q_0[i] /=2;
-                    scaleFactor++;
-                }
-            }
-            break;
+        t = (sBYTE)(q_0[i] >> 8);
+        if (t < 0)
+            t = -t;
+        if (t > maxOverflow)
+            maxOverflow = t;
+    }
+    for (i=0; i<8; i++) {
+        for (j=0; j<maxOverflow; j++) {
+            q_0[i] >>= 1;
+            scaleFactor++;
         }
     }
     // Update older Q values
