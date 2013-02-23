@@ -9,6 +9,9 @@
 #include "goertzel.h"
 #include "types.h"
 
+#define SCALE_DECAY_TICK 100
+#define N_SAMPLES 256
+
 // how many samples have been processed in the current run
 static DWORD samplesProcessed = 0;
 // boolean describing if all the samples have been processed and is ready
@@ -16,6 +19,10 @@ static DWORD samplesProcessed = 0;
 static BYTE goertzelReady = 0;
 // scale factor for shifting an overflowed 8-bit number
 static BYTE scaleFactor = 0;
+// delay counter that waits for SCALE_DECAY_TICK magnitudes until it
+// decrements the scale.  hopefully this will allows us to see better
+// decibel ranges.
+static BYTE scaleDelayCount = 0;
 
 // variables kept over each sample iteration
 static sDWORD q_0[8] = {0};
@@ -86,8 +93,10 @@ void goertzel_process_sample(BYTE sample8bit) {
         st = (sBYTE)((q_0[i] >> 8) & 0xFF);
         if (t < 0)
             st = -st;
-        if (t > maxOverflow)
+        if (t > maxOverflow) {
             maxOverflow = st;
+            scaleDecayCount = 0;
+        }
     }
     for (i=0; i<8; i++) {
         for (j=0; j<maxOverflow; j++) {
@@ -103,7 +112,10 @@ void goertzel_process_sample(BYTE sample8bit) {
     if (++samplesProcessed >= N_SAMPLES) {
         goertzelReady = 1;
         samplesProcessed = 0;
-        scaleFactor = 0;
+        if (++scaleDecayCount < SCALE_DECAY_TICK)
+            // keep the scaleFactor
+        else
+            --scaleFactor;
     }
 }
 
