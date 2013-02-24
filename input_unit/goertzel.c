@@ -22,7 +22,7 @@ static BYTE scaleFactor = 0;
 // delay counter that waits for SCALE_DECAY_TICK magnitudes until it
 // decrements the scale.  hopefully this will allows us to see better
 // decibel ranges.
-static BYTE scaleDelayCount = 0;
+static BYTE scaleDecayCount = 0;
 
 // variables kept over each sample iteration
 static sDWORD q_0[8] = {0};
@@ -113,7 +113,7 @@ void goertzel_process_sample(BYTE sample8bit) {
         goertzelReady = 1;
         samplesProcessed = 0;
         if (++scaleDecayCount < SCALE_DECAY_TICK)
-            // keep the scaleFactor
+            ;// keep the scaleFactor
         else
             --scaleFactor;
     }
