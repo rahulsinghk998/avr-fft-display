@@ -109,7 +109,7 @@ void goertzel_process_sample(BYTE sample8bit) {
         q_0[7] = t*2 - q_2[7] + s;
         twiddleUpdated[7]++;
     }
-    // Check for overflow, if overflowed, then shift everything down
+    // Check for overflow
     maxOverflow = 0;
     for (i=0; i<8; i++) {
         st = (sBYTE)((q_0[i] >> 8) & 0xFF);
@@ -120,18 +120,22 @@ void goertzel_process_sample(BYTE sample8bit) {
             scaleDecayCount = 0;
         }
     }
+    // shift everything down by the overflow amount
     for (i=0; i<8; i++) {
         for (j=0; j<maxOverflow; j++) {
             q_0[i] >>= 1;
             scaleFactor++;
         }
     }
+    // Update sample count
+    samplesProcessed++;
     // Update older Q values
     for (i=0; i<8; i++) {
         q_1[i] = q_0[i];
         q_2[i] = q_1[i];
     }
-    if (twiddleUpdated[7] >= N_SAMPLES) { // if the last needed sample is done
+    // if the last needed sample is done
+    if (twiddleUpdated[7] >= N_SAMPLES) { 
         goertzelReady = 1;
         samplesProcessed = 0;
         for (i=0; i<8; i++)
