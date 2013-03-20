@@ -130,9 +130,10 @@ void goertzel_process_sample(BYTE sample8bit) {
     for (i=0; i<8; i++) {
         for (j=0; j<maxOverflow; j++) {
             q_0[i] >>= 1;
-            scaleFactor++;
         }
     }
+    // add the overflow amount to the static scale factor
+    scaleFactor += maxOverflow;
     // Update sample count
     samplesProcessed++;
     // Update older Q values
