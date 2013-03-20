@@ -185,7 +185,7 @@ void goertzel_process_magnitudes(DWORD* results) {
     sResults[1] = q_1[1]*q_1[1] + q_2[1]*q_2[1] + q_1[1]*q_2[1];
     sResults[2] = q_1[2]*q_1[2] + q_2[2]*q_2[2];
     t = (q_2[3] > 0) ? 0x0000 & coeff_mult[(BYTE)(q_2[3])] : \
-                       0xFFFF & -coeff_mult(BYTE)(-q_2[3])];
+                       0xFFFF & -coeff_mult[(BYTE)(-q_2[3])];
     sResults[3] = q_1[3]*q_1[3] \
                  - q_1[3]*t\
                  + q_2[3]*q_2[3];
