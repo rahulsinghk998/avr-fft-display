@@ -55,65 +55,21 @@ void goertzel_process_sample(BYTE sample8bit) {
     sDWORD s;
     BYTE i, j, t, maxOverflow;
     sBYTE st;
-    // determines which twiddle factors should be updated
+    // mask that determines which twiddle factors should be updated.
+    // 0th bit should change every time, 4th bit should change every
+    // 16th time, etc.
     BYTE shouldUpdate = (BYTE)((samplesProcessed + 1) ^ samplesProcessed);
     // scale the input down if overflow was previously detected
     s = (sDWORD)(sample8bit >> scaleFactor);
-    // F_s / 10
-    if ((shouldUpdate & 0b00000001) && (twiddleUpdated[0] < N_SAMPLES)) {
-        t = (q_1[0] >= 0) ? 0x0000 & coeff_mult[(BYTE)(q_1[0])] : \
-                            0xFFFF & -coeff_mult[(BYTE)(-q_1[0])];
-        q_0[0] = t*2 - q_2[0] + s;
-        twiddleUpdated[0]++;
-    }
-    // F_s / 20
-    if ((shouldUpdate & 0b00000010) && (twiddleUpdated[1] < N_SAMPLES)) {
-        t = (q_1[1] >= 0) ? 0x0000 & coeff_mult[(BYTE)(q_1[1])] : \
-                            0xFFFF & -coeff_mult[(BYTE)(-q_1[1])];
-        q_0[1] = t*2 - q_2[1] + s;
-        twiddleUpdated[1]++;
-    }
-    // F_s / 40
-    if ((shouldUpdate & 0b00000100) && (twiddleUpdated[2] < N_SAMPLES)) {
-        t = (q_1[2] >= 0) ? 0x0000 & coeff_mult[(BYTE)(q_1[2])] : \
-                            0xFFFF & -coeff_mult[(BYTE)(-q_1[2])];
-        q_0[2] = t*2 - q_2[2] + s;
-        twiddleUpdated[2]++;
-    }
-    // F_s / 80
-    if ((shouldUpdate & 0b00001000) && (twiddleUpdated[3] < N_SAMPLES)) {
-        t = (q_1[3] >= 0) ? 0x0000 & coeff_mult[(BYTE)(q_1[3])] : \
-                            0xFFFF & -coeff_mult[(BYTE)(-q_1[3])];
-        q_0[3] = t*2 - q_2[3] + s;
-        twiddleUpdated[3]++;
-    }
-    // F_s / 160
-    if ((shouldUpdate & 0b00010000) && (twiddleUpdated[4] < N_SAMPLES)) {
-        t = (q_1[4] >= 0) ? 0x0000 & coeff_mult[(BYTE)(q_1[4])] : \
-                            0xFFFF & -coeff_mult[(BYTE)(-q_1[4])];
-        q_0[4] = t*2 - q_2[4] + s;
-        twiddleUpdated[4]++;
-    }
-    // F_s / 320
-    if ((shouldUpdate & 0b00100000) && (twiddleUpdated[5] < N_SAMPLES)) {
-        t = (q_1[5] >= 0) ? 0x0000 & coeff_mult[(BYTE)(q_1[5])] : \
-                            0xFFFF & -coeff_mult[(BYTE)(-q_1[5])];
-        q_0[5] = t*2 - q_2[5] + s;
-        twiddleUpdated[5]++;
-    }
-    // F_s / 640
-    if ((shouldUpdate & 0b01000000) && (twiddleUpdated[6] < N_SAMPLES)) {
-        t = (q_1[6] >= 0) ? 0x0000 & coeff_mult[(BYTE)(q_1[6])] : \
-                            0xFFFF & -coeff_mult[(BYTE)(-q_1[6])];
-        q_0[6] = t*2 - q_2[6] + s;
-        twiddleUpdated[6]++;
-    }
-    // F_s / 1280
-    if ((shouldUpdate & 0b10000000) && (twiddleUpdated[7] < N_SAMPLES)) {
-        t = (q_1[7] >= 0) ? 0x0000 & coeff_mult[(BYTE)(q_1[7])] : \
-                            0xFFFF & -coeff_mult[(BYTE)(-q_1[7])];
-        q_0[7] = t*2 - q_2[7] + s;
-        twiddleUpdated[7]++;
+    // F_s / (10*2^i)
+    for (i=0; i<8; i++) {
+        // only update if shouldUpdate bit got switched on && not done sampling
+        if ((shouldUpdate & (1 << i)) && (twiddleUpdated[i] < N_SAMPLES)) {
+            t = (q_1[i] >= 0) ? 0x0000 & coeff_mult[(BYTE)(q_1[i])] : \
+                                0xFFFF & -coeff_mult[(BYTE)(-q_1[i])];
+            q_0[i] = t*2 - q_2[i] + s;
+            twiddleUpdated[i]++;
+        }
     }
     // Check for overflow
     maxOverflow = 0;
