@@ -53,7 +53,7 @@ static const BYTE coeff_mult[256] PROGMEM = \
  */
 void goertzel_process_sample(BYTE sample8bit) {
     sDWORD s;
-    BYTE i, j, t, maxOverflow;
+    BYTE i,  t, maxOverflow;
     sBYTE st;
     // mask that determines which twiddle factors should be updated.
     // 0th bit should change every time, 4th bit should change every
@@ -84,7 +84,7 @@ void goertzel_process_sample(BYTE sample8bit) {
     }
     // shift everything down by the overflow amount
     for (i=0; i<8; i++)
-        q_0[i] >>= j;
+        q_0[i] >>= maxOverflow;
     // add the overflow amount to the static scale factor
     scaleFactor += maxOverflow;
     // Update sample count
