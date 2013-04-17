@@ -91,8 +91,8 @@ void goertzel_process_sample(BYTE sample8bit) {
     samplesProcessed++;
     // Update older Q values
     for (i=0; i<8; i++) {
-        q_1[i] = q_0[i];
         q_2[i] = q_1[i];
+        q_1[i] = q_0[i];
     }
     // if the last needed sample is done
     if (twiddleUpdated[7] >= N_SAMPLES) { 
