@@ -134,34 +134,11 @@ void goertzel_process_magnitudes(DWORD* results) {
     sDWORD* sResults = (sDWORD*)results;
     // calculate squared magnitudes
     // TODO: overflow checking?
-    sResults[0] = q_1[0]*q_1[0] - q_1[0]*q_2[0] + q_2[0]*q_2[0]; 
-    sResults[1] = q_1[1]*q_1[1] + q_2[1]*q_2[1] + q_1[1]*q_2[1];
-    sResults[2] = q_1[2]*q_1[2] + q_2[2]*q_2[2];
-    t = (q_2[3] > 0) ? 0x0000 & coeff_mult[(BYTE)(q_2[3])] : \
-                       0xFFFF & -coeff_mult[(BYTE)(-q_2[3])];
-    sResults[3] = q_1[3]*q_1[3] \
-                 - q_1[3]*t\
-                 + q_2[3]*q_2[3];
-    t = (q_2[4] > 0) ? 0x0000 & coeff_mult[(BYTE)(q_2[4])] : \
-                       0xFFFF & -coeff_mult[(BYTE)(-q_2[4])];
-    sResults[4] = q_1[4]*q_1[4] \
-                 - q_1[4]*t \
-                 + q_2[4]*q_2[4];
-    t = (q_2[5] > 0) ? 0x0000 & coeff_mult[(BYTE)(q_2[5])] : \
-                       0xFFFF & -coeff_mult[(BYTE)(-q_2[5])];
-    sResults[5] = q_1[5]*q_1[5] \
-                 - q_1[5]*t \
-                 + q_2[5]*q_2[5];
-    t = (q_2[6] > 0) ? 0x0000 & coeff_mult[(BYTE)(q_2[6])] : \
-                       0xFFFF & -coeff_mult[(BYTE)(-q_2[6])];
-    sResults[6] = q_1[6]*q_1[6] \
-                 - q_1[6]*t \
-                 + q_2[6]*q_2[6];
-    t = (q_2[7] > 0) ? 0x0000 & coeff_mult[(BYTE)(q_2[7])] : \
-                       0xFFFF & -coeff_mult[(BYTE)(-q_2[7])];
-    sResults[7] = q_1[7]*q_1[7] \
-                 - q_1[7]*t \
-                 + q_2[7]*q_2[7];
+    for (i=0; i<8; i++) {
+        t = (q_2[i] > 0) ? 0x0000 & coeff_mult[(BYTE)(q_2[i])] : \
+                           0xFFFF & -coeff_mult[(BYTE)(-q_2[i])];
+        sResults[i] = q_1[i]*q_1[i] - q_1[i]*t + q_2[i]*q_2[i];
+    }
     // clean up for next run
     for (i=0; i<8; i++) {
         q_0[i] = 0;
