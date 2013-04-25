@@ -14,7 +14,7 @@
 
 static volatile BYTE clockOption = DISABLE_TIMER;
 
-void timer8_init(DWORD countTo, BYTE clockSelect) {
+void timer8_init(BYTE countTo, BYTE clockSelect) {
 
     // Set Clear Timer on Compare (CTC) Mode
     TCCR0A &= ~(_BV(WGM00) | _BV(WGM02));
@@ -54,7 +54,7 @@ void timer8_clear_flag(void) {
     bit_set(TIFR0, OCF0A);
 }
 
-DWORD timer8_get_count(void) {
+BYTE timer8_get_count(void) {
 	return TCNT0;
 }
 
