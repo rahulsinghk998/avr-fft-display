@@ -59,16 +59,18 @@ void goertzel_process_sample(BYTE sample8bit) {
     // 0th bit should change every time, 4th bit should change every
     // 16th time, etc.
     BYTE shouldUpdate = (BYTE)((samplesProcessed + 1) ^ samplesProcessed);
+    BYTE freqMask = 1;
     // scale the input down if overflow was previously detected
     s = (sDWORD)(sample8bit >> scaleFactor);
     // F_s / (10*2^i)
     for (i=0; i<8; i++) {
         // only update if shouldUpdate bit got switched on && not done sampling
-        if ((shouldUpdate & (1 << i)) && (twiddleUpdated[i] < N_SAMPLES)) {
+        if ((shouldUpdate & freqMask) && (twiddleUpdated[i] < N_SAMPLES)) {
             t = (q_1[i] >= 0) ? 0x0000 & coeff_mult[(BYTE)(q_1[i])] : \
                                 0xFFFF & -coeff_mult[(BYTE)(-q_1[i])];
             q_0[i] = t*2 - q_2[i] + s;
             twiddleUpdated[i]++;
+            freqMask <<= 1;
         }
     }
     // Check for overflow
