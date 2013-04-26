@@ -70,8 +70,8 @@ void goertzel_process_sample(BYTE sample8bit) {
                                 0xFFFF & -coeff_mult[(BYTE)(-q_1[i])];
             q_0[i] = t*2 - q_2[i] + s;
             twiddleUpdated[i]++;
-            freqMask <<= 1;
         }
+        freqMask <<= 1;
     }
     // Check for overflow
     maxOverflow = 0;
