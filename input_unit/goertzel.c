@@ -78,7 +78,7 @@ void goertzel_process_sample(BYTE sample8bit) {
     for (i=0; i<8; i++) {
         st = (sBYTE)(q_0[i] >> 8);
         if (st < 0)
-            st = -st;
+            st = ~st; // invert, NOT -
         if (st > maxOverflow) {
             maxOverflow = st;
             scaleDecayCount = 0;
