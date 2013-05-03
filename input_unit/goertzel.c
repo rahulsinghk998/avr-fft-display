@@ -138,7 +138,7 @@ void goertzel_process_magnitudes(DWORD* results) {
     // TODO: overflow checking?
     for (i=0; i<8; i++) {
         t = (q_2[i] > 0) ? 0x0000 & coeff_mult[(BYTE)(q_2[i])] : \
-                           0xFFFF & -coeff_mult[(BYTE)(-q_2[i])];
+                           0xFF00 | -coeff_mult[(BYTE)(-q_2[i])];
         sResults[i] = q_1[i]*q_1[i] - q_1[i]*t + q_2[i]*q_2[i];
     }
     // clean up for next run
