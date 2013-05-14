@@ -8,6 +8,15 @@
 #include "common.h"
 #include "goertzel.h"
 #include "types.h"
+#include "suart.h"
+
+//#define DEBUG_INPUT
+//#define DEBUG_SCALEFACTOR
+//#define DEBUG_SCALEDECAYCOUNT
+//#define DEBUG_SHOULDUPDATE
+//#define DEBUG_Q
+//#define DEBUG_MAXOVERFLOW
+//#define DEBUG_ALL_QS
 
 #define SCALE_DECAY_TICK 100
 #define N_SAMPLES 20
@@ -52,6 +61,16 @@ static const BYTE coeff_mult[256] PROGMEM = \
  *  none
  */
 void goertzel_process_sample(BYTE sample8bit) {
+#ifdef DEBUG_INPUT
+    suart_xmit(sample8bit);
+#endif
+#ifdef DEBUG_SCALEFACTOR
+    suart_xmit(scaleFactor);
+#endif
+#ifdef DEBUG_SCALEDECAYCOUNT
+    suart_xmit(scaleDecayCount);
+#endif
+
     sDWORD s;
     BYTE i,  t, maxOverflow;
     sBYTE st;
@@ -59,6 +78,9 @@ void goertzel_process_sample(BYTE sample8bit) {
     // 0th bit should change every time, 4th bit should change every
     // 16th time, etc.
     BYTE shouldUpdate = (BYTE)((samplesProcessed + 1) ^ samplesProcessed);
+#ifdef DEBUG_SHOULDUPDATE
+    suart_xmit(shouldUpdate);
+#endif
     BYTE freqMask = 1;
     // scale the input down if overflow was previously detected
     s = (sDWORD)(sample8bit >> scaleFactor);
@@ -70,6 +92,9 @@ void goertzel_process_sample(BYTE sample8bit) {
                                 0xFF00 | -coeff_mult[(BYTE)(-q_1[i])];
             q_0[i] = t*2 - q_2[i] + s;
             twiddleUpdated[i]++;
+#ifdef DEBUG_Q
+            suart_xmit(q_0[i]);
+#endif
         }
         freqMask <<= 1;
     }
@@ -84,9 +109,16 @@ void goertzel_process_sample(BYTE sample8bit) {
             scaleDecayCount = 0;
         }
     }
+#ifdef DEBUG_MAXOVERFLOW
+    suart_xmit(maxOverflow);
+#endif
     // shift everything down by the overflow amount
     for (i=0; i<8; i++)
         q_0[i] >>= maxOverflow;
+#ifdef DEBUG_ALL_QS
+    for (i=0; i<8; i++)
+        suart_xmit(q_0[i]);
+#endif
     // add the overflow amount to the static scale factor
     scaleFactor += maxOverflow;
     // Update sample count
