@@ -17,12 +17,6 @@ static DWORD samplesProcessed = 0;
 // boolean describing if all the samples have been processed and is ready
 // for magnitude calculation
 static BYTE goertzelReady = 0;
-// scale factor for shifting an overflowed 8-bit number
-static BYTE scaleFactor = 0;
-// delay counter that waits for SCALE_DECAY_TICK magnitudes until it
-// decrements the scale.  hopefully this will allows us to see better
-// decibel ranges.
-static BYTE scaleDecayCount = 0;
 
 // variables kept over each sample iteration
 static sDWORD q_0[8] = {0};
@@ -53,15 +47,13 @@ static const BYTE coeff_mult[256] PROGMEM = \
  */
 void goertzel_process_sample(BYTE sample8bit) {
     sDWORD s;
-    BYTE i,  t, maxOverflow;
-    sBYTE st;
+    BYTE i,  t;
     // mask that determines which twiddle factors should be updated.
     // 0th bit should change every time, 4th bit should change every
     // 16th time, etc.
     BYTE shouldUpdate = (BYTE)((samplesProcessed + 1) ^ samplesProcessed);
     BYTE freqMask = 1;
-    // scale the input down if overflow was previously detected
-    s = (sDWORD)(sample8bit >> scaleFactor);
+    s = (sDWORD)(sample8bit);
     // F_s / (10*2^i)
     for (i=0; i<8; i++) {
         // only update if shouldUpdate bit got switched on && not done sampling
@@ -73,22 +65,6 @@ void goertzel_process_sample(BYTE sample8bit) {
         }
         freqMask <<= 1;
     }
-    // Check for overflow
-    maxOverflow = 0;
-    for (i=0; i<8; i++) {
-        st = (sBYTE)(q_0[i] >> 8);
-        if (st < 0)
-            st = ~st; // invert, NOT -
-        if (st > maxOverflow) {
-            maxOverflow = st;
-            scaleDecayCount = 0;
-        }
-    }
-    // shift everything down by the overflow amount
-    for (i=0; i<8; i++)
-        q_0[i] >>= maxOverflow;
-    // add the overflow amount to the static scale factor
-    scaleFactor += maxOverflow;
     // Update sample count
     samplesProcessed++;
     // Update older Q values
@@ -102,10 +78,6 @@ void goertzel_process_sample(BYTE sample8bit) {
         samplesProcessed = 0;
         for (i=0; i<8; i++)
             twiddleUpdated[i] = 0; // clear update count
-        if (++scaleDecayCount < SCALE_DECAY_TICK)
-            ;// keep the scaleFactor
-        else
-            --scaleFactor;
     }
 }
 
@@ -159,6 +131,5 @@ void goertzel_reset(void) {
     }
     goertzelReady = 0;
     samplesProcessed = 0;
-    scaleFactor = 0;
 }
     
