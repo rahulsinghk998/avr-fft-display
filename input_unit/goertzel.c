@@ -67,7 +67,7 @@ void goertzel_process_sample(BYTE sample8bit) {
         // only update if shouldUpdate bit got switched on && not done sampling
         if ((shouldUpdate & freqMask) && (twiddleUpdated[i] < N_SAMPLES)) {
             t = (q_1[i] >= 0) ? 0x0000 & coeff_mult[(BYTE)(q_1[i])] : \
-                                0xFF00 | -coeff_mult[(BYTE)(-q_1[i])];
+                                -(0x0000 | coeff_mult[(BYTE)(-q_1[i])]);
             q_0[i] = t*2 - q_2[i] + s;
             twiddleUpdated[i]++;
         }
