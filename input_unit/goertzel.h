@@ -12,7 +12,7 @@
 #include "types.h"
 #include <avr/pgmspace.h>
 
-void goertzel_process_sample(BYTE);
+void goertzel_process_sample(DWORD);
 BYTE goertzel_is_ready(void);
 void goertzel_process_magnitudes(DWORD*);
 void goertzel_reset(void);

@@ -88,7 +88,7 @@ int main(void) {
 
     /* Set up ADC */
     adc_init(); // initialize ADC hardware
-    adc_set_align(ADC_LEFT_ALIGN); // set the ADC value to be left-aligned
+    adc_set_align(ADC_RIGHT_ALIGN); // set the ADC value to be left-aligned
     adc_set_prescaler(ADC_CLK_DIV_8); // run ADC clock at 1MHz
     adc_select(ADC0_SINGLE); // read from ADC0
     adc_enable_int(); // enable ADC interrupt on completed conversion
@@ -145,7 +145,7 @@ ISR(TIM0_COMPA_vect) {
 
 /* When a sample is taken, do calculations, and get frequency if ready */
 ISR(ADC_vect) {
-    goertzel_process_sample(adc_get_value8());
+    goertzel_process_sample(adc_get_value16());
     if (goertzel_is_ready()) {
         BYTE i;
         DWORD output16[8];
