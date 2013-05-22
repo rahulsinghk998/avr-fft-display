@@ -52,8 +52,8 @@ static const BYTE coeff_mult[256] PROGMEM = \
  *  none
  */
 void goertzel_process_sample(BYTE sample8bit) {
-    sDWORD s;
-    BYTE i,  t, maxOverflow;
+    sDWORD s, t;
+    BYTE i, maxOverflow;
     sBYTE st;
     // mask that determines which twiddle factors should be updated.
     // 0th bit should change every time, 4th bit should change every
